@@ -1,0 +1,9 @@
+services:
+
+  inference:
+    profiles: [ all, inference ]
+    build: inference
+    image: dolores/inference:latest
+    container_name: dolores-inference
+    env_file:
+      - inference/.env
