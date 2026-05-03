@@ -1,5 +1,5 @@
 # `dolores`
-An AI agent for finding and fixing bugs. 
+An AI agent that proactively finds and fixes bugs based on open source intelligence. 
 
 ## Quickstart
 **Step 1.** Clone the Dolores GitHub repository. 
