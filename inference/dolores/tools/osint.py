@@ -19,10 +19,11 @@ def search_nvd(keyword: str, results_per_page: int = 10) -> dict:
     response = get(
         "https://services.nvd.nist.gov/rest/json/cves/2.0",
         headers={"apiKey": api_key},
-        params={"keywordSearch": keyword,  "resultsPerPage": results_per_page},
+        params={"keywordSearch": keyword, "resultsPerPage": results_per_page},
     )
     response.raise_for_status()
     return response.json()
+
 
 @tool
 def convert_cve_to_stix(cve_json: str) -> str:
