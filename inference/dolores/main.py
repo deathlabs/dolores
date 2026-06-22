@@ -1,35 +1,74 @@
+# Standard library imports.
+from contextlib import asynccontextmanager
+from os import environ
+
 # Third party imports.
+from fastapi import FastAPI, Request
+from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents import create_agent
-from langchain.messages import HumanMessage
+from pydantic import BaseModel
 
 # Local imports.
-from dolores.tools.osint import convert_cve_to_stix, search_nvd
-
-# Define the tools the agent can use.
-tools = [convert_cve_to_stix, search_nvd]
-
-# Create the agent.
-agent = create_agent(
-    model="openai:gpt-4o",
-    system_prompt="You are a helpful assistant tasked with searching for CVEs and generating STIX 2.1 Vulnerability objects.",
-    tools=tools,
+from dolores.checkpoint_saver import DjangoCheckpointSaver
+from dolores.model_providers.openai import (
+    get_openai_model,
+    get_openai_model_from_azure,
 )
 
+# Get environment variables.
+MODEL_PROVIDER = environ["MODEL_PROVIDER"]
+TOOLS_ENDPOINT = environ["TOOLS_ENDPOINT"]
 
-def main():
-    """Start the Dolores agent."""
-
-    # Get the user prompt.
-    user_prompt = "Generate a STIX object for the latest CVE regarding Django."
-    user_message = [HumanMessage(content=user_prompt)]
-
-    # Invoke the agent.
-    agent_responses = agent.invoke({"messages": user_message})
-
-    # Return the agent's response.
-    for agent_response in agent_responses["messages"]:
-        print(agent_response)
+# Get a model handler.
+match MODEL_PROVIDER:
+    case "openai":
+        model = get_openai_model()
+    case "azure_openai":
+        model = get_openai_model_from_azure()
+    case _:
+        print("Invalid MODEL_PROVIDER (options: openai or azure_openai).")
+        exit(1)
 
 
-if __name__ == "__main__":
-    main()
+# Identify the tools the agent has available.
+async def get_tools():
+    return await MultiServerMCPClient(
+        {
+            "dolores": {
+                "transport": "http",
+                "url": TOOLS_ENDPOINT,
+            }
+        }
+    ).get_tools()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    tools = await get_tools()
+    app.state.agent = create_agent(
+        model=model,
+        system_prompt="You are a helpful assistant.",
+        checkpointer=DjangoCheckpointSaver(),
+        tools=tools,
+    )
+    yield
+
+
+# Init a FastAPI server with the lifespan wired in directly.
+api = FastAPI(lifespan=lifespan)
+
+
+class InvokeRequest(BaseModel):
+    thread_id: str
+    message: str
+
+
+@api.post("/invoke")
+async def invoke(request: Request, body: InvokeRequest):
+    agent = request.app.state.agent
+    config = {"configurable": {"thread_id": body.thread_id}}
+    result = await agent.ainvoke(
+        {"messages": [{"role": "user", "content": body.message}]},
+        config=config,
+    )
+    return {"messages": result["messages"]}
