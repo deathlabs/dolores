@@ -1,8 +1,11 @@
 # Standard library imports.
 from os import environ
 
+# Third party imports.
+from langchain_core.language_models.base import BaseLanguageModel
 
-def get_openai_model():
+
+def get_openai_model() -> BaseLanguageModel:
     # Third party imports.
     from langchain_openai import ChatOpenAI
 
@@ -13,7 +16,7 @@ def get_openai_model():
     return ChatOpenAI(model=OPENAI_MODEL, api_key=OPENAI_API_KEY)
 
 
-def get_openai_model_from_azure():
+def get_openai_model_from_azure() -> BaseLanguageModel:
     # Third party imports.
     from azure.identity import (
         AzureAuthorityHosts,

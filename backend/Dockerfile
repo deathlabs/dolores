@@ -1,9 +1,9 @@
 FROM alpine:3.23
 LABEL image.authors="Victor Fernandez III, @cyberphor"
 WORKDIR /home/backend/
-COPY chats/ chats/
 COPY entrypoint.sh entrypoint.sh
 COPY dolores/ dolores/
+COPY memories/ memories/
 COPY requirements.txt requirements.txt
 COPY manage.py manage.py
 RUN apk add --no-cache --update python3 py3-pip uvicorn &&\
