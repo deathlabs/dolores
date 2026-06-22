@@ -4,15 +4,16 @@ from os import environ
 
 # Third party imports.
 from langchain.agents import create_agent
-from langgraph.checkpoint.base import BaseCheckpointSaver
-from langchain.messages import HumanMessage
+from langchain.messages import HumanMessage, SystemMessage
 from langchain_core.language_models.base import BaseLanguageModel
 from langchain_mcp_adapters.client import MultiServerMCPClient
-
+from langgraph.checkpoint.base import BaseCheckpointSaver
+from langgraph.graph.state import CompiledStateGraph
+from langgraph.store.base import BaseStore
 
 # Local imports.
-from dolores.memory.checkpoint_saver import DjangoCheckpointSaver
-from dolores.memory.store import DjangoStore
+from dolores.memory.short_term import DjangoCheckpointSaver
+from dolores.memory.long_term import DjangoStore
 from dolores.models.openai import (
     get_openai_model,
     get_openai_model_from_azure,
@@ -21,7 +22,7 @@ from dolores.models.openai import (
 # Get environment variables.
 MODEL_PROVIDER = environ["MODEL_PROVIDER"]
 TOOLS_ENDPOINT = environ["TOOLS_ENDPOINT"]
-REPOSITORIES = environ.get("REPOSITORIES", "batman, superman, wonderwoman")
+REPOSITORIES = environ.get("REPOSITORIES", "deathlabs/emu, deathlabs/kaiju")
 
 
 def build_model_client() -> BaseLanguageModel:
@@ -48,17 +49,17 @@ async def build_mcp_client():
     return await client.get_tools()
 
 
-async def build_system_prompt(store: DjangoStore) -> str:
+async def build_system_prompt(store: BaseStore) -> SystemMessage:
     """Builds the system prompt from procedural memory."""
     namespace = ("procedural", "dolores")
     rules = await store.asearch(namespace, limit=100)
     if not rules:
-        return ""
+        return SystemMessage(content="")
     instructions = "\n".join(rule.value["instruction"] for rule in rules)
-    return f"Instructions:\n{instructions}"
+    return SystemMessage(content=f"Instructions:\n{instructions}")
 
 
-async def get_semantic_context(store: DjangoStore, repository: str) -> str:
+async def get_semantic_context(store: BaseStore, repository: str) -> str:
     """Builds context for a given repository from semantic memory."""
     namespace = ("semantic", repository)
     memories = await store.asearch(namespace, limit=100)
@@ -71,10 +72,10 @@ async def get_semantic_context(store: DjangoStore, repository: str) -> str:
 def build_agent(
     model_client: BaseLanguageModel,
     mcp_client: MultiServerMCPClient,
-    system_prompt: str,
+    system_prompt: SystemMessage,
     checkpointer: BaseCheckpointSaver,
-    store: DjangoStore,
-):
+    store: BaseStore,
+) -> CompiledStateGraph:
     """Builds a Dolores agent."""
     return create_agent(
         model=model_client,
@@ -85,20 +86,31 @@ def build_agent(
     )
 
 
-async def run_agent_1(agent, store: DjangoStore, repository: str) -> None:
-    """Tells a joke using randomly generated topics."""
+async def observe_repository(
+    agent: CompiledStateGraph, store: BaseStore, repository: str
+) -> None:
+    """Checks open PRs for a repository and records observations."""
     semantic_context = await get_semantic_context(store, repository)
     prompt = f"""
 Current Repository: {repository}
 {semantic_context}
 
-Tell a joke using randomly generated topics. Don't repeat the same joke twice.
-If you learn anything new or noteworthy about this repository, use your memory tool to save it.
+Use the get_pull_requests tool to retrieve all pull requests for this repository.
+For each pull request, use the get_pull_request_status tool to get its current status.
+
+Look for what may be useful in the future, such as:
+- Patterns in PR titles or branches that suggest the type of work being done
+- PRs that have been open for an unusually long time
+- Any signs of a change in language, framework, or tooling based on PR content
+- Anything else noteworthy about the state of this repository
+
+Summarize what you found.
     """
     result = await agent.ainvoke(
         {"messages": [HumanMessage(content=prompt)]},
-        config={"configurable": {"thread_id": f"agent1-{repository}"}},
+        config={"configurable": {"thread_id": f"observe-{repository}"}},
     )
+    print(f"\n[{repository}]")
     print(result["messages"][-1].content)
 
 
@@ -110,10 +122,10 @@ async def main():
     store = DjangoStore()
     system_prompt = await build_system_prompt(store)
     repositories = [repo.strip() for repo in REPOSITORIES.split(",")]
-    agent_1 = build_agent(model_client, mcp_client, system_prompt, checkpointer, store)
+    agent = build_agent(model_client, mcp_client, system_prompt, checkpointer, store)
 
     for repository in repositories:
-        await run_agent_1(agent_1, store, repository)
+        await observe_repository(agent, store, repository)
 
 
 if __name__ == "__main__":
