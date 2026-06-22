@@ -5,7 +5,10 @@ on:
   push:
     branches: [ "**" ]
     paths:
+      - "backend/**"
+      - "database/**"
       - "inference/**"
+      - "tools/**"
 
 jobs:
   secrets:
@@ -26,7 +29,9 @@ jobs:
       fail-fast: false
       matrix:
         container:
+          - backend
           - inference
+          - tools
     steps:
       - name: Clone the repository
         uses: actions/checkout@v4
@@ -46,7 +51,10 @@ jobs:
       fail-fast: false
       matrix:
         container:
+          - backend
+          - database
           - inference
+          - tools
     steps:
       - uses: actions/checkout@v4
       - uses: hadolint/hadolint-action@v3.1.0
@@ -61,7 +69,9 @@ jobs:
       fail-fast: false
       matrix:
         container:
+          - backend
           - inference
+          - tools
     container:
       image: semgrep/semgrep
     steps:
@@ -80,7 +90,10 @@ jobs:
       fail-fast: false
       matrix:
         container:
+          - backend
+          - database
           - inference
+          - tools
     steps:
       - uses: actions/checkout@v6
       - name: Run Syft

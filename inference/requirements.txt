@@ -1,3 +1,6 @@
+azure-identity
 langchain
 langchain-openai
+langchain-mcp-adapters
 langgraph
+pydantic

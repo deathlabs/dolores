@@ -1,9 +1,46 @@
 services:
 
+  database:
+    profiles: [ all, inference, backend, database ]
+    build: database
+    image: dolores/database:latest
+    container_name: dolores-database
+    ports:
+      - "5432:5432"
+    volumes:
+      - dolores_database:/var/lib/postgresql/data
+    env_file:
+      - database/.env
+
+  backend:
+    profiles: [ all, inference, backend ]
+    build: backend
+    image: dolores/backend:latest
+    container_name: dolores-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env
+
+  tools:
+    profiles: [ all, inference, tools ]
+    build: tools
+    image: dolores/tools:latest
+    container_name: dolores-tools
+    ports:
+      - "8002:8002"
+    env_file:
+      - tools/.env
+
   inference:
     profiles: [ all, inference ]
     build: inference
     image: dolores/inference:latest
     container_name: dolores-inference
+    ports:
+      - "8001:8001"
     env_file:
       - inference/.env
+
+volumes:
+  dolores_database:
