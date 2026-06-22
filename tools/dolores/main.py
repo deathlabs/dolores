@@ -23,6 +23,7 @@ async def health_check(request: Request) -> PlainTextResponse:
 @mcp.tool(description="Returns a single random interesting topic.")
 async def get_random_topic() -> str:
     from random import choice
+
     topics = [
         "Quantum Computing breakthroughs",
         "The evolution of edge AI inference",

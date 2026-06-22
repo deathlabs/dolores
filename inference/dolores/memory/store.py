@@ -1,6 +1,6 @@
 # Standard library imports.
 from os import environ
-from typing import Any, Iterable, Literal, Optional, Sequence
+from typing import Any, Iterable, Literal
 
 # Third party imports.
 from httpx import AsyncClient

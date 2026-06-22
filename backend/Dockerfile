@@ -1,6 +1,7 @@
 FROM alpine:3.23
 LABEL image.authors="Victor Fernandez III, @cyberphor"
 WORKDIR /home/backend/
+COPY checkpoints/ checkpoints/
 COPY entrypoint.sh entrypoint.sh
 COPY dolores/ dolores/
 COPY memories/ memories/
