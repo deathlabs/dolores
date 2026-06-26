@@ -17,7 +17,7 @@ logger = getLogger("dolores")
 
 
 @mcp.custom_route("/api/v1/healthcheck", methods=["GET"])
-async def health_check() -> PlainTextResponse:
+async def health_check(request) -> PlainTextResponse:
     return PlainTextResponse(dumps({"status": "ok"}))
 
 

@@ -1,11 +1,16 @@
+# Standard library imports.
+from datetime import datetime
+
 # Third party imports.
 from ninja import Schema
 
 
 class MemorySchema(Schema):
-    namespace: list
+    namespace: list[str]
     key: str
     value: dict
+    created_at: datetime
+    updated_at: datetime
 
 
 class NotFoundSchema(Schema):
