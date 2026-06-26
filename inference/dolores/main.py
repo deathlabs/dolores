@@ -124,8 +124,7 @@ async def get_environment_tools():
 
 async def evaluate_repository(agent: CompiledStateGraph, repository: str) -> None:
     """Evaluates a repository's pull requests and extracts durable security insights."""
-    content = dedent(
-        f"""
+    content = dedent(f"""
         Evaluate the {repository} repository for durable security knowledge.
 
         Start by using check_semantic_memory to recall what you already know about {repository}. Then use get_pull_requests to retrieve all PRs, and get_pull_request_status to determine their current status (open, merged, or closed).
@@ -141,8 +140,7 @@ async def evaluate_repository(agent: CompiledStateGraph, repository: str) -> Non
         Before saving, check semantic_memory to see if similar insights already exist. Update or refine existing knowledge instead of creating duplicates.
 
         Use update_semantic_memory to save only actionable, specific insights that will improve the multi-agent system's future behavior.
-    """
-    )
+    """)
     result = await agent.ainvoke(
         input={"messages": [HumanMessage(content=content)]},
         config={
