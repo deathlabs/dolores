@@ -1,9 +1,9 @@
 FROM alpine:3.23
 LABEL image.authors="Victor Fernandez III, @cyberphor"
-WORKDIR /home/postgres
+WORKDIR /home/dolores/
 COPY entrypoint.sh entrypoint.sh
 RUN apk add --no-cache postgresql postgresql-contrib libpq-dev &&\
-    chmod u+x /home/postgres/entrypoint.sh &&\
+    chmod u+x /home/dolores/entrypoint.sh &&\
     mkdir /var/lib/postgresql/data &&\
     mkdir /run/postgresql &&\
     chown -R postgres:postgres /var/lib/postgresql/data &&\

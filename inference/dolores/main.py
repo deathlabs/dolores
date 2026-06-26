@@ -1,5 +1,5 @@
 # Standard library imports.
-from asyncio import asyncio
+from asyncio import run
 from dataclasses import dataclass
 from os import environ
 from textwrap import dedent
@@ -124,7 +124,7 @@ async def get_environment_tools():
 async def evaluate_repository(agent: CompiledStateGraph, repository: str) -> None:
     """Evaluates a repository's pull requests and extracts durable security insights."""
     content = dedent(f"""
-        Evaluate the {repository} repository for durable security knowledge.
+        Evaluate the {repository} repository for security vulnerabilities.
 
         Start by using check_semantic_memory to recall what you already know about {repository}. Then use get_pull_requests to retrieve all PRs, and get_pull_request_status to determine their current status (open, merged, or closed).
 

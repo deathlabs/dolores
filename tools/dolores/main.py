@@ -1,6 +1,8 @@
 # Standard library imports.
 from json import dumps
 from logging import getLogger
+from pathlib import Path
+from subprocess import run
 
 # Third party imports.
 from fastmcp import FastMCP
@@ -15,10 +17,118 @@ mcp = FastMCP(name="dolores")
 configure_logging(level="DEBUG")
 logger = getLogger("dolores")
 
+DOWNLOADS_DIR = Path("/home/tools/downloads")
+
 
 @mcp.custom_route("/api/v1/healthcheck", methods=["GET"])
 async def health_check(request) -> PlainTextResponse:
     return PlainTextResponse(dumps({"status": "ok"}))
+
+
+@mcp.tool(description="Clones a GitHub repository to a namespaced directory.")
+async def git_clone(repo_name: str, evaluation_id: str) -> str:
+    client = GitHubClient(repo_name)
+    url = client._repo.clone_url
+    dest = DOWNLOADS_DIR / evaluation_id / repo_name
+    if dest.exists():
+        return str(dest)
+    dest.mkdir(parents=True, exist_ok=True)
+    result = run(
+        ["git", "clone", "--depth", "1", url, str(dest)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        dest.rmdir()
+        return f"Clone failed: {result.stderr.strip()}"
+    return str(dest)
+
+
+@mcp.tool(description="Lists all files in a cloned repository.")
+async def list_files(repo_name: str, evaluation_id: str) -> str:
+    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+    if not repo_path.exists():
+        return f"Repo not found: {repo_path}"
+    paths = [
+        str(p.relative_to(repo_path))
+        for p in repo_path.rglob("*")
+        if p.is_file() and ".git" not in p.parts
+    ]
+    return dumps(sorted(paths))
+
+
+@mcp.tool(description="Reads the contents of a file in a cloned repository.")
+async def read_file(repo_name: str, evaluation_id: str, file_path: str) -> str:
+    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+    target = (repo_path / file_path).resolve()
+    if not target.is_relative_to(repo_path.resolve()):
+        return "Access denied: path is outside the repository"
+    if not target.exists():
+        return f"File not found: {target}"
+    try:
+        return target.read_text()
+    except Exception as e:
+        return f"Error reading file: {e}"
+
+
+@mcp.tool(description="Creates a new branch in a cloned repository.")
+async def git_branch(repo_name: str, evaluation_id: str, branch_name: str) -> str:
+    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+    if not repo_path.exists():
+        return f"Repo not found: {repo_path}"
+    result = run(
+        ["git", "checkout", "-b", branch_name],
+        capture_output=True,
+        text=True,
+        cwd=repo_path,
+    )
+    if result.returncode != 0:
+        return f"Branch failed: {result.stderr.strip()}"
+    return f"Created branch: {branch_name}"
+
+
+@mcp.tool(description="Writes content to a file in a cloned repository.")
+async def write_file(repo_name: str, evaluation_id: str, file_path: str, content: str) -> str:
+    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+    target = (repo_path / file_path).resolve()
+    if not target.is_relative_to(repo_path.resolve()):
+        return "Access denied: path is outside the repository"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        target.write_text(content)
+        return f"Wrote: {file_path}"
+    except Exception as e:
+        return f"Error writing file: {e}"
+
+
+@mcp.tool(description="Commits and pushes changes in a cloned repository.")
+async def git_push(repo_name: str, evaluation_id: str, message: str) -> str:
+    client = GitHubClient(repo_name)
+    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+    if not repo_path.exists():
+        return f"Repo not found: {repo_path}"
+    repo = client._repo
+    branch = run(
+        ["git", "branch", "--show-current"],
+        capture_output=True,
+        text=True,
+        cwd=repo_path,
+    ).stdout.strip()
+    changed = run(
+        ["git", "diff", "--name-only"],
+        capture_output=True,
+        text=True,
+        cwd=repo_path,
+    ).stdout.strip().splitlines()
+    for file_path in changed:
+        target = repo_path / file_path
+        content = target.read_text()
+        try:
+            existing = repo.get_contents(file_path, ref=branch)
+            repo.update_file(file_path, message, content, existing.sha, branch=branch)
+        except Exception:
+            repo.create_file(file_path, message, content, branch=branch)
+    return f"Pushed {len(changed)} file(s) to {branch}"
 
 
 @mcp.tool(description="Fetches all pull requests for the given GitHub repository.")
