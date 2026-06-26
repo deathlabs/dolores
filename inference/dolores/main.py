@@ -50,7 +50,7 @@ When writing summaries or memories, be specific, concise, and actionable. Every 
 # Get environment variables.
 MODEL_PROVIDER = environ["MODEL_PROVIDER"]
 TOOLS_ENDPOINT = environ["TOOLS_ENDPOINT"]
-REPOSITORIES = environ.get("REPOSITORIES", "deathlabs/emu, deathlabs/kaiju")
+REPOSITORIES = environ["REPOSITORIES"]
 
 
 def build_model_client() -> BaseLanguageModel:
