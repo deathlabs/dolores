@@ -44,7 +44,7 @@ jobs:
       - name: Check code formatting
         run: black --diff --color --check ${{ matrix.container }}
 
-  dockerfile-link:
+  dockerfile-lint:
     name: Dockerfile Lint Check
     runs-on: ubuntu-latest
     strategy:
