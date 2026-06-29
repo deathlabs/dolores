@@ -26,10 +26,10 @@ async def health_check(request) -> PlainTextResponse:
 
 
 @mcp.tool(description="Clones a GitHub repository to a namespaced directory.")
-async def git_clone(repo_name: str, evaluation_id: str) -> str:
+async def git_clone(repo_name: str) -> str:
     client = GitHubClient(repo_name)
     url = client._repo.clone_url
-    dest = DOWNLOADS_DIR / evaluation_id / repo_name
+    dest = DOWNLOADS_DIR / repo_name
     if dest.exists():
         return str(dest)
     dest.mkdir(parents=True, exist_ok=True)
@@ -45,8 +45,8 @@ async def git_clone(repo_name: str, evaluation_id: str) -> str:
 
 
 @mcp.tool(description="Lists all files in a cloned repository.")
-async def list_files(repo_name: str, evaluation_id: str) -> str:
-    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+async def list_files(repo_name: str) -> str:
+    repo_path = DOWNLOADS_DIR / repo_name
     if not repo_path.exists():
         return f"Repo not found: {repo_path}"
     paths = [
@@ -58,8 +58,8 @@ async def list_files(repo_name: str, evaluation_id: str) -> str:
 
 
 @mcp.tool(description="Reads the contents of a file in a cloned repository.")
-async def read_file(repo_name: str, evaluation_id: str, file_path: str) -> str:
-    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+async def read_file(repo_name: str, file_path: str) -> str:
+    repo_path = DOWNLOADS_DIR / repo_name
     target = (repo_path / file_path).resolve()
     if not target.is_relative_to(repo_path.resolve()):
         return "Access denied: path is outside the repository"
