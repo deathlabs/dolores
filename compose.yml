@@ -45,7 +45,7 @@ services:
     ports:
       - "8002:8002"
     volumes:
-      - repos:/home/dolores/repos
+      - downloads:/home/dolores/downloads
     env_file:
       - tools/.env
     healthcheck:
@@ -63,7 +63,7 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      - repos:/home/dolores/repos
+      - downloads:/home/dolores/downloads
     env_file:
       - inference/.env
     depends_on:
@@ -74,4 +74,4 @@ services:
 
 volumes:
   database:
-  repos:
+  downloads:

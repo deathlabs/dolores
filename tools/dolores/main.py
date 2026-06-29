@@ -17,7 +17,7 @@ mcp = FastMCP(name="dolores")
 configure_logging(level="DEBUG")
 logger = getLogger("dolores")
 
-DOWNLOADS_DIR = Path("/home/tools/downloads")
+DOWNLOADS_DIR = Path("/home/dolores/downloads")
 
 
 @mcp.custom_route("/api/v1/healthcheck", methods=["GET"])
@@ -72,8 +72,8 @@ async def read_file(repo_name: str, evaluation_id: str, file_path: str) -> str:
 
 
 @mcp.tool(description="Creates a new branch in a cloned repository.")
-async def git_branch(repo_name: str, evaluation_id: str, branch_name: str) -> str:
-    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+async def git_branch(repo_name: str, branch_name: str) -> str:
+    repo_path = DOWNLOADS_DIR / repo_name
     if not repo_path.exists():
         return f"Repo not found: {repo_path}"
     result = run(
@@ -88,8 +88,8 @@ async def git_branch(repo_name: str, evaluation_id: str, branch_name: str) -> st
 
 
 @mcp.tool(description="Writes content to a file in a cloned repository.")
-async def write_file(repo_name: str, evaluation_id: str, file_path: str, content: str) -> str:
-    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+async def write_file(repo_name: str, file_path: str, content: str) -> str:
+    repo_path = DOWNLOADS_DIR / repo_name
     target = (repo_path / file_path).resolve()
     if not target.is_relative_to(repo_path.resolve()):
         return "Access denied: path is outside the repository"
@@ -102,9 +102,9 @@ async def write_file(repo_name: str, evaluation_id: str, file_path: str, content
 
 
 @mcp.tool(description="Commits and pushes changes in a cloned repository.")
-async def git_push(repo_name: str, evaluation_id: str, message: str) -> str:
+async def git_push(repo_name: str, message: str) -> str:
     client = GitHubClient(repo_name)
-    repo_path = DOWNLOADS_DIR / evaluation_id / repo_name
+    repo_path = DOWNLOADS_DIR / repo_name
     if not repo_path.exists():
         return f"Repo not found: {repo_path}"
     repo = client._repo
@@ -114,12 +114,16 @@ async def git_push(repo_name: str, evaluation_id: str, message: str) -> str:
         text=True,
         cwd=repo_path,
     ).stdout.strip()
-    changed = run(
-        ["git", "diff", "--name-only"],
-        capture_output=True,
-        text=True,
-        cwd=repo_path,
-    ).stdout.strip().splitlines()
+    changed = (
+        run(
+            ["git", "diff", "--name-only"],
+            capture_output=True,
+            text=True,
+            cwd=repo_path,
+        )
+        .stdout.strip()
+        .splitlines()
+    )
     for file_path in changed:
         target = repo_path / file_path
         content = target.read_text()

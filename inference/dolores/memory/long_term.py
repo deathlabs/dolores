@@ -101,7 +101,6 @@ class DjangoStore(BaseStore):
                     "offset": offset,
                 },
             )
-            print(response.json())
         return [self._row_to_search_item(row) for row in response.json()]
 
     async def abatch(self, ops: Iterable[Op]) -> list[Result]:
