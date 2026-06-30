@@ -5,6 +5,12 @@ from datetime import datetime
 from ninja import Schema
 
 
+class MemoryCreateSchema(Schema):
+    namespace: list[str]
+    key: str
+    value: dict
+
+
 class MemorySchema(Schema):
     namespace: list[str]
     key: str
