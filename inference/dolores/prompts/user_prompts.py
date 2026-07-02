@@ -26,8 +26,11 @@ def get_evaluator_user_prompt(repository: str) -> str:
         Do not rely solely on keyword matching. Read each function's logic and identify the vulnerability class even if it does not match a known pattern exactly. Evaluate every file in the repository, including small or seemingly trivial scripts.
 
         If you find vulnerabilities that require fixes:
-        * Create a branch
+        * Create a branch for the fix (e.g., "fix/insecure-deserialization")
+        * Check out that branch locally in the cloned repository before editing any files
+        * Do not edit or write files until the branch has been checked out locally
         * Edit affected files to apply fixes
+        * Verify the local repository is on the correct branch before committing
         * Commit and push your changes with a descriptive message, including a list of vulnerabilities found and fixed
 
         If no fixes are needed, do not create a branch or push changes.
