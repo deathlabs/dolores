@@ -10,7 +10,13 @@ on:
       - "inference/**"
       - "tools/**"
   workflow_dispatch:
-
+    inputs:
+      severity_cutoff:
+        description: 'Severity threshold to fail the scan. Options: low, high, critical. Default: low'
+        required: false
+        type: choice
+        options: [low, high, critical]
+        default: low
 jobs:
   secrets:
     name: Secrets Scan
@@ -107,4 +113,4 @@ jobs:
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
-          severity-cutoff: low
+          severity-cutoff: ${{ github.event.inputs.severity_cutoff }}
