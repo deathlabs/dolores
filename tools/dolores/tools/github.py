@@ -239,7 +239,9 @@ async def update_github_branch(
         # Update the file if it already exists in the repository, otherwise create it.
         try:
             existing = repo.get_contents(file_path, ref=target_branch)
-            repo.update_file(file_path, commit_message, content, existing.sha, branch=target_branch)
+            repo.update_file(
+                file_path, commit_message, content, existing.sha, branch=target_branch
+            )
         except Exception:
             repo.create_file(file_path, commit_message, content, branch=target_branch)
 

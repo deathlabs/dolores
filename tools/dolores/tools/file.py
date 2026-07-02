@@ -71,7 +71,9 @@ async def read_file(repo_name: str, file_path: str) -> str:
         return f"Error reading file: {error}"
 
 
-@tool(description="Writes content to a file in a cloned repository. Requires the branch the repository must currently be checked out on; fails if the branches don't match.")
+@tool(
+    description="Writes content to a file in a cloned repository. Requires the branch the repository must currently be checked out on; fails if the branches don't match."
+)
 async def write_file(repo_name: str, file_path: str, content: str, branch: str) -> str:
     """Writes content to a file in a cloned repository.
 
