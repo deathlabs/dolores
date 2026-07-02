@@ -1,5 +1,5 @@
 ---
-name: check
+name: CI Pipeline
 
 on:
   push:
@@ -111,4 +111,4 @@ jobs:
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
-          severity-cutoff: ${{ github.event.inputs.severity_cutoff || "low" }}
+          severity-cutoff: ${{ github.event.inputs.severity_cutoff || 'low' }}
