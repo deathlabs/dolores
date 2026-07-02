@@ -9,6 +9,7 @@ on:
       - "database/**"
       - "inference/**"
       - "tools/**"
+  workflow_dispatch:
 
 jobs:
   secrets:
