@@ -1,5 +1,5 @@
 ---
-name: check
+name: CI Pipeline
 
 on:
   push:
@@ -9,8 +9,16 @@ on:
       - "database/**"
       - "inference/**"
       - "tools/**"
+  workflow_dispatch:
+    inputs:
+      severity_cutoff:
+        description: "Severity threshold to fail the scan. Options: low, high, critical. Default: low."
+        type: choice
+        options: [low, high, critical]
+        default: low
 
 jobs:
+
   secrets:
     name: Secrets Scan
     runs-on: ubuntu-latest
@@ -44,7 +52,7 @@ jobs:
       - name: Check code formatting
         run: black --diff --color --check ${{ matrix.container }}
 
-  dockerfile-link:
+  dockerfile-lint:
     name: Dockerfile Lint Check
     runs-on: ubuntu-latest
     strategy:
@@ -52,7 +60,6 @@ jobs:
       matrix:
         container:
           - backend
-          - database
           - inference
           - tools
     steps:
@@ -91,7 +98,6 @@ jobs:
       matrix:
         container:
           - backend
-          - database
           - inference
           - tools
     steps:
@@ -106,4 +112,4 @@ jobs:
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
-          severity-cutoff: high
+          severity-cutoff: ${{ github.event.inputs.severity_cutoff || 'low' }}

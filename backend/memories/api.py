@@ -6,7 +6,7 @@ from ninja import NinjaAPI, Query
 
 # Local imports.
 from memories.models import Memory
-from memories.schema import MemorySchema, NotFoundSchema
+from memories.schemas import MemoryCreateSchema, MemorySchema, NotFoundSchema
 
 # Init the memories API.
 api = NinjaAPI(urls_namespace="memories")
@@ -32,8 +32,8 @@ def search_memories(
     return memories.order_by("-updated_at")[offset : offset + limit]
 
 
-@api.post("/", response={201: MemorySchema})
-def create_memory(request, payload: MemorySchema):
+@api.post("/", response={201: MemoryCreateSchema})
+def create_memory(request, payload: MemoryCreateSchema):
     memory, _ = Memory.objects.update_or_create(
         namespace=payload.namespace,
         key=payload.key,
