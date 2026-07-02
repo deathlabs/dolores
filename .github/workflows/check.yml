@@ -64,9 +64,8 @@ jobs:
           - tools
     steps:
       - uses: actions/checkout@v4
-      - uses: hadolint/hadolint-action@v3.1.0
+      - uses: hadolint/hadolint-action@v3.3.0
         with:
-          failure-threshold: error
           dockerfile: ${{ matrix.container }}/Dockerfile
 
   sast:
@@ -112,6 +111,5 @@ jobs:
       - name: Scan SBOM
         uses: anchore/scan-action@v7
         with:
-          format: cyclonedx
           sbom: sbom-${{ matrix.container }}.json
           severity-cutoff: ${{ github.event.inputs.severity_cutoff || 'low' }}

@@ -32,6 +32,7 @@ def get_evaluator_user_prompt(repository: str) -> str:
         * Edit affected files to apply fixes
         * Verify the local repository is on the correct branch before committing
         * Commit and push your changes with a descriptive message, including a list of vulnerabilities found and fixed
+        * Submit a Pull/Merge Request with a detailed description of the vulnerabilities found, the fixes applied, and any relevant context or references
 
         If no fixes are needed, do not create a branch or push changes.
 
