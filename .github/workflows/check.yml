@@ -102,14 +102,16 @@ jobs:
           - tools
     steps:
       - uses: actions/checkout@v6
-      - name: Run Syft
+      - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
+          format: cyclonedx
           path: ${{ matrix.container }}
           output-file: sbom-${{ matrix.container }}.json
-          artifact-name: sbom-${{ matrix.container }}
-      - name: Run Grype
+          artifact-name: sbom-${{ matrix.container }}.json
+      - name: Scan SBOM
         uses: anchore/scan-action@v7
         with:
+          format: cyclonedx
           sbom: sbom-${{ matrix.container }}.json
           severity-cutoff: ${{ github.event.inputs.severity_cutoff || 'low' }}
