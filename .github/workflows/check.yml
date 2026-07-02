@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       severity_cutoff:
-        description: 'Severity threshold to fail the scan. Options: low, high, critical. Default: low'
+        description: "Severity threshold to fail the scan. Options: low, high, critical. Default: low."
         required: false
         type: choice
         options: [low, high, critical]
