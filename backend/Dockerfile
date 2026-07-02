@@ -2,8 +2,8 @@ FROM alpine:3.23
 LABEL image.authors="Victor Fernandez III, @cyberphor"
 WORKDIR /home/dolores/
 COPY checkpoints/ checkpoints/
-COPY entrypoint.sh entrypoint.sh
 COPY dolores/ dolores/
+COPY entrypoint.sh entrypoint.sh
 COPY memories/ memories/
 COPY requirements.txt requirements.txt
 COPY manage.py manage.py

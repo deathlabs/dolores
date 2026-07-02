@@ -13,11 +13,12 @@ on:
     inputs:
       severity_cutoff:
         description: "Severity threshold to fail the scan. Options: low, high, critical. Default: low."
-        required: false
         type: choice
         options: [low, high, critical]
         default: low
+
 jobs:
+
   secrets:
     name: Secrets Scan
     runs-on: ubuntu-latest
