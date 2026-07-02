@@ -59,7 +59,6 @@ jobs:
       matrix:
         container:
           - backend
-          - database
           - inference
           - tools
     steps:
@@ -98,7 +97,6 @@ jobs:
       matrix:
         container:
           - backend
-          - database
           - inference
           - tools
     steps:
@@ -113,4 +111,4 @@ jobs:
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
-          severity-cutoff: ${{ github.event.inputs.severity_cutoff }}
+          severity-cutoff: ${{ github.event.inputs.severity_cutoff || "low" }}
