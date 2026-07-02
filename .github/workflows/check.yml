@@ -106,4 +106,4 @@ jobs:
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
-          severity-cutoff: high
+          severity-cutoff: low
