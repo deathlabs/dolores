@@ -21,7 +21,7 @@ class DjangoStore(BaseStore):
     """A Django-based Langgraph store for managing agent memory persistence."""
 
     def _row_to_item(self, row: dict) -> Item:
-        """Converts a row into an Item."""
+        """Convert a row into an Item."""
         return Item(
             namespace=tuple(row["namespace"]),
             key=row["key"],
@@ -31,7 +31,7 @@ class DjangoStore(BaseStore):
         )
 
     def _row_to_search_item(self, row: dict) -> SearchItem:
-        """Converts a row into a SearchItem."""
+        """Convert a row into a SearchItem."""
         return SearchItem(
             namespace=tuple(row["namespace"]),
             key=row["key"],
@@ -44,7 +44,7 @@ class DjangoStore(BaseStore):
     async def aget(
         self, namespace: tuple, key: str, *, refresh_ttl: bool | None = None
     ) -> Item | None:
-        """Fetches a single memory using Django."""
+        """Fetch a single memory using Django."""
         async with AsyncClient() as client:
             response = await client.get(
                 f"{BACKEND_ENDPOINT}/api/v1/memories/",
@@ -65,7 +65,7 @@ class DjangoStore(BaseStore):
         *,
         ttl: float | None | NotProvided = NOT_PROVIDED,
     ) -> None:
-        """Stores a single memory using Django."""
+        """Store a single memory using Django."""
         async with AsyncClient() as client:
             await client.post(
                 f"{BACKEND_ENDPOINT}/api/v1/memories/",
@@ -73,7 +73,7 @@ class DjangoStore(BaseStore):
             )
 
     async def adelete(self, namespace: tuple[str, ...], key: str) -> None:
-        """Deletes a single memory using Django."""
+        """Delete a single memory using Django."""
         async with AsyncClient() as client:
             await client.delete(
                 f"{BACKEND_ENDPOINT}/api/v1/memories/",
@@ -90,7 +90,7 @@ class DjangoStore(BaseStore):
         offset: int = 0,
         refresh_ttl: bool | None = None,
     ) -> list[SearchItem]:
-        """Searches for one of more memories from Django."""
+        """Search for one of more memories from Django."""
         async with AsyncClient() as client:
             response = await client.get(
                 f"{BACKEND_ENDPOINT}/api/v1/memories/search/",
@@ -104,27 +104,27 @@ class DjangoStore(BaseStore):
         return [self._row_to_search_item(row) for row in response.json()]
 
     async def abatch(self, ops: Iterable[Op]) -> list[Result]:
-        """Performs a batch of operations using Django."""
+        """Perform a batch of operations using Django."""
         raise NotImplementedError
 
     def get(
         self, namespace: tuple[str, ...], key: str, *, refresh_ttl: bool | None = None
     ) -> Item | None:
-        """Fetches a single memory from Django."""
+        """Fetch a single memory from Django."""
         raise NotImplementedError
 
     def put(self, namespace: tuple[str, ...], key: str, value: dict) -> None:
-        """Stores a single memory in Django."""
+        """Store a single memory in Django."""
         raise NotImplementedError
 
     def delete(self, namespace: tuple[str, ...], key: str) -> None:
-        """Deletes a single memory from Django."""
+        """Delete a single memory from Django."""
         raise NotImplementedError
 
     def search(self, namespace_prefix: tuple[str, ...], **kwargs) -> list[SearchItem]:
-        """Searches for one of more memories in Django."""
+        """Search for one of more memories in Django."""
         raise NotImplementedError
 
     def batch(self, ops: Iterable[Op]) -> list[Result]:
-        """Performs a batch of operations using Django."""
+        """Perform a batch of operations using Django."""
         raise NotImplementedError

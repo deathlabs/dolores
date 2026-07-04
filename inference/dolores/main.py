@@ -13,8 +13,8 @@ from dolores.memory.context_schema import ContextSchema
 from dolores.memory.long_term import DjangoStore
 from dolores.memory.short_term import DjangoCheckpointSaver
 from dolores.models import get_model_client
-from dolores.prompts.system_prompts import get_evaluator_system_prompt
-from dolores.prompts.user_prompts import get_evaluator_user_prompt
+from dolores.prompts.system_prompts import get_system_prompt
+from dolores.prompts.user_prompts import get_user_prompt
 from dolores.tools import get_environment_tools, get_memory_tools
 
 # Get environment variables.
@@ -24,8 +24,8 @@ REPOSITORIES = environ["REPOSITORIES"]
 
 
 async def evaluate_repository(agent: CompiledStateGraph, repository: str) -> None:
-    """Evaluates a repository's pull requests and extracts durable security insights."""
-    user_prompt = get_evaluator_user_prompt(repository=repository)
+    """Evaluate a repository's security posture."""
+    user_prompt = get_user_prompt(repository=repository)
     results = await agent.ainvoke(
         input={"messages": [HumanMessage(content=user_prompt)]},
         config={
@@ -41,13 +41,13 @@ async def evaluate_repository(agent: CompiledStateGraph, repository: str) -> Non
 
 
 async def main():
-    """Starts Dolores."""
+    """Start Dolores."""
     memory_tools = get_memory_tools()
     environment_tools = await get_environment_tools(url=TOOLS_ENDPOINT)
     agent = create_agent(
         model=get_model_client(model_provider=MODEL_PROVIDER),
         tools=memory_tools + environment_tools,
-        system_prompt=get_evaluator_system_prompt(),
+        system_prompt=get_system_prompt(),
         context_schema=ContextSchema,
         checkpointer=DjangoCheckpointSaver(),
         store=DjangoStore(),

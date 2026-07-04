@@ -7,7 +7,7 @@ from dolores.memory.context_schema import ContextSchema
 
 @tool
 async def check_semantic_memory(env: ToolRuntime[ContextSchema]) -> str:
-    """Retrieves semantic facts about the current repository from memory."""
+    """Retrieve semantic facts about the current repository from memory."""
     namespace = ("semantic", env.context.repository)
     memories = await env.store.asearch(namespace, limit=100)
     if not memories:
@@ -17,7 +17,7 @@ async def check_semantic_memory(env: ToolRuntime[ContextSchema]) -> str:
 
 @tool
 async def update_semantic_memory(env: ToolRuntime[ContextSchema], fact: str) -> str:
-    """Saves a semantic fact about the current repository to memory."""
+    """Save a semantic fact about the current repository to memory."""
     namespace = ("semantic", env.context.repository)
     key = f"fact-{fact[:32].replace(' ', '-').lower()}"
     value = {"fact": fact}
@@ -27,7 +27,7 @@ async def update_semantic_memory(env: ToolRuntime[ContextSchema], fact: str) -> 
 
 @tool
 async def check_procedural_memory(env: ToolRuntime[ContextSchema]) -> str:
-    """Retrieves procedural instructions from memory."""
+    """Retrieve procedural instructions from memory."""
     namespace = ("procedural", "dolores")
     memories = await env.store.asearch(namespace, limit=100)
     if not memories:
@@ -39,7 +39,7 @@ async def check_procedural_memory(env: ToolRuntime[ContextSchema]) -> str:
 async def update_procedural_memory(
     env: ToolRuntime[ContextSchema], instruction: str
 ) -> str:
-    """Saves a procedural instruction to memory."""
+    """Save a procedural instruction to memory."""
     namespace = ("procedural", "dolores")
     key = f"procedure-{instruction[:32].replace(' ', '-').lower()}"
     value = {"instruction": instruction}
@@ -48,7 +48,7 @@ async def update_procedural_memory(
 
 
 def get_memory_tools() -> list:
-    """Returns a list of memory tools."""
+    """Get a list of memory tools."""
     return [
         check_procedural_memory,
         check_semantic_memory,

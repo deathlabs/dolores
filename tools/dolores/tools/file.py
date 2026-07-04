@@ -10,7 +10,7 @@ from git import Repo, InvalidGitRepositoryError
 from dolores.config import DOWNLOADS_DIR
 
 
-@tool(description="Lists all files in a cloned repository.")
+@tool(description="List all files in a cloned repository.")
 async def list_files(repo_name: str) -> str:
     """List all files in a cloned repository.
 
@@ -39,7 +39,7 @@ async def list_files(repo_name: str) -> str:
     return dumps(sorted(paths))
 
 
-@tool(description="Reads the contents of a file in a cloned repository.")
+@tool(description="Read the contents of a file in a cloned repository.")
 async def read_file(repo_name: str, file_path: str) -> str:
     """Read the contents of a file in a cloned repository.
 
@@ -72,10 +72,10 @@ async def read_file(repo_name: str, file_path: str) -> str:
 
 
 @tool(
-    description="Writes content to a file in a cloned repository. Requires the branch the repository must currently be checked out on; fails if the branches don't match."
+    description="Write content to a file in a cloned repository. Requires the branch the repository must currently be checked out on; fails if the branches don't match."
 )
 async def write_file(repo_name: str, file_path: str, content: str, branch: str) -> str:
-    """Writes content to a file in a cloned repository.
+    """Write content to a file in a cloned repository.
 
     Args:
         repo_name: The name of the repository (e.g., "username/repo").
