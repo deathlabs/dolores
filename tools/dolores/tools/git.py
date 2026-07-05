@@ -7,7 +7,7 @@ from git import Repo
 from fastmcp.tools import tool
 
 # Local imports.
-from dolores.config import DOWNLOADS_DIR
+from dolores.config import DOWNLOADS_DIR, GITHUB_PERSONAL_ACCESS_TOKEN
 
 
 @tool(
@@ -69,113 +69,188 @@ async def git_clone(url: str) -> None | str:
     # Check if the repository has already been cloned.
     if not to_path.exists():
         try:
-            Repo.clone_from(url=url, to_path=to_path)
+            repo = Repo.clone_from(url=url, to_path=to_path)
         except Exception as error:
             return f"Failed to clone the {repo_name} repository: {error}"
+
+        # Bake the token into the origin URL so later push/pull calls
+        # don't need an interactive credential prompt.
+        token = GITHUB_PERSONAL_ACCESS_TOKEN
+        if token:
+            authed_url = f"https://x-access-token:{token}@github.com/{repo_name}.git"
+            repo.remotes.origin.set_url(authed_url)
 
     return to_path.resolve()
 
 
-@tool(description="")
-async def git_commit():
-    return
-
-
-@tool()
-async def git_pull():
-    return
-
-
-@tool(description="Push changes in a cloned repository.")
-async def git_push(
+@tool(description="Stage and commit changes in a cloned repository.")
+async def git_commit(
     repo_name: str, commit_message: str, branch: str | None = None
 ) -> str:
-    """Push changes in a cloned repository.
+    """Stage all changes and commit them in a cloned repository.
 
     Args:
         repo_name: The full name of the repository (i.e., owner/repo).
         commit_message: The commit message to use for the changes.
-        branch: The branch the repository is expected to be checked out on. If provided and the repo is on a different branch, the commit will fail. If omitted, the commit will be made to whatever branch is currently checked out.
+        branch: The branch the repo is expected to be checked out on. If provided
+            and the repo is on a different branch, the commit will fail.
 
     Returns:
         A message if successful, or an error message if failed.
     """
-
-    # Init a GitHub client.
-    client = get_github_client()
-
-    # Define where to find the repository locally.
     repo_path = Path(f"{DOWNLOADS_DIR}/{repo_name}")
 
-    # Check if the repository has been cloned.
     if not repo_path.exists():
         return f"Repo not found: {repo_path}"
 
-    # Get the repository object.
-    try:
-        repo = client.get_repo(repo_name)
-    except GithubException as error:
-        if error.status == 404:
-            return f"Failed to find the {repo_name} repository"
-        return f"Failed to access the {repo_name} repository: {error}"
+    repo = Repo(repo_path)
 
-    # Get the current branch name.
-    current_branch = run(
-        ["git", "branch", "--show-current"],
-        capture_output=True,
-        text=True,
-        cwd=repo_path,
-    ).stdout.strip()
-
-    # Check for detached HEAD, which has no branch name.
-    if not current_branch:
+    if repo.head.is_detached:
         return f"Repo at {repo_path} is in a detached HEAD state"
 
-    # If a branch was specified, enforce it matches what's checked out.
+    current_branch = repo.active_branch.name
+
     if branch is not None and branch != current_branch:
         return (
             f"Expected branch '{branch}' but repo is on '{current_branch}'. "
-            f"Call checkout_branch first."
+            f"Call git_checkout first."
         )
 
-    target_branch = branch or current_branch
+    if not repo.is_dirty(untracked_files=True):
+        return f"No changes to commit on the {current_branch} branch"
 
-    # Stage all changes (new, modified, deleted) so nothing is missed.
-    run(["git", "add", "-A"], cwd=repo_path)
+    try:
+        repo.git.add(A=True)
+        repo.index.commit(commit_message)
+    except Exception as error:
+        return f"Failed to commit changes on {current_branch}: {error}"
 
-    # Get the list of changed files relative to the last commit.
-    changed = (
-        run(
-            ["git", "diff", "--cached", "--name-only"],
-            capture_output=True,
-            text=True,
-            cwd=repo_path,
+    return f"Committed changes on {current_branch} in {repo_name}"
+
+
+@tool(description="List local and remote branches in a cloned repository.")
+async def git_list_branches(repo_name: str) -> str:
+    """List branches in a cloned Git repository.
+
+    Args:
+        repo_name: The full name of the repository (i.e., owner/repo).
+
+    Returns:
+        A formatted list of local and remote branches, or an error message if failed.
+    """
+    repo_path = Path(f"{DOWNLOADS_DIR}/{repo_name}")
+
+    if not repo_path.exists():
+        return f"Repo not found: {repo_path}"
+
+    repo = Repo(repo_path)
+
+    try:
+        repo.remotes.origin.fetch()
+    except Exception as error:
+        return f"Failed to fetch latest refs for {repo_name}: {error}"
+
+    local_branches = [head.name for head in repo.heads]
+
+    remote_branches = [
+        ref.name.removeprefix("origin/")
+        for ref in repo.remotes.origin.refs
+        if ref.name != "origin/HEAD"
+    ]
+
+    if not local_branches and not remote_branches:
+        return f"No branches found in {repo_name}"
+
+    lines = [f"Branches in {repo_name}:"]
+
+    if local_branches:
+        lines.append("Local:")
+        lines.extend(f"  - {name}" for name in sorted(local_branches))
+
+    if remote_branches:
+        lines.append("Remote:")
+        lines.extend(f"  - {name}" for name in sorted(remote_branches))
+
+    return "\n".join(lines)
+
+
+@tool(
+    description="Pull the latest changes for the current branch in a cloned repository."
+)
+async def git_pull(repo_name: str, branch: str | None = None) -> str:
+    """Pull the latest changes for a cloned repository's current branch.
+
+    Args:
+        repo_name: The full name of the repository (i.e., owner/repo).
+        branch: The branch the repo is expected to be checked out on. If provided
+            and the repo is on a different branch, the pull will fail.
+
+    Returns:
+        A message if successful, or an error message if failed.
+    """
+    repo_path = Path(f"{DOWNLOADS_DIR}/{repo_name}")
+
+    if not repo_path.exists():
+        return f"Repo not found: {repo_path}"
+
+    repo = Repo(repo_path)
+
+    if repo.head.is_detached:
+        return f"Repo at {repo_path} is in a detached HEAD state"
+
+    current_branch = repo.active_branch.name
+
+    if branch is not None and branch != current_branch:
+        return (
+            f"Expected branch '{branch}' but repo is on '{current_branch}'. "
+            f"Call git_checkout first."
         )
-        .stdout.strip()
-        .splitlines()
-    )
 
-    # Check if there's anything to push.
-    if not changed:
-        return f"No changes to push on the {target_branch} branch"
+    try:
+        repo.remotes.origin.pull(current_branch)
+    except Exception as error:
+        return f"Failed to pull {current_branch} in {repo_name}: {error}"
 
-    # Commit and push each changed file via the GitHub API.
-    for file_path in changed:
-        target = repo_path / file_path
+    return f"Pulled latest changes for {current_branch} in {repo_name}"
 
-        # Skip deleted files; not yet supported.
-        if not target.exists():
-            continue
 
-        content = target.read_text()
+@tool(description="Push committed changes in a cloned repository.")
+async def git_push(repo_name: str, branch: str | None = None) -> str:
+    """Push committed changes in a cloned repository.
 
-        # Update the file if it already exists in the repository, otherwise create it.
-        try:
-            existing = repo.get_contents(file_path, ref=target_branch)
-            repo.update_file(
-                file_path, commit_message, content, existing.sha, branch=target_branch
-            )
-        except Exception:
-            repo.create_file(file_path, commit_message, content, branch=target_branch)
+    Args:
+        repo_name: The full name of the repository (i.e., owner/repo).
+        branch: The branch the repo is expected to be checked out on. If provided
+            and the repo is on a different branch, the push will fail.
 
-    return f"Pushed {len(changed)} file(s) to {target_branch}"
+    Returns:
+        A message if successful, or an error message if failed.
+    """
+    repo_path = Path(f"{DOWNLOADS_DIR}/{repo_name}")
+
+    if not repo_path.exists():
+        return f"Repo not found: {repo_path}"
+
+    repo = Repo(repo_path)
+
+    if repo.head.is_detached:
+        return f"Repo at {repo_path} is in a detached HEAD state"
+
+    current_branch = repo.active_branch.name
+
+    if branch is not None and branch != current_branch:
+        return (
+            f"Expected branch '{branch}' but repo is on '{current_branch}'. "
+            f"Call git_checkout first."
+        )
+
+    try:
+        origin = repo.remotes.origin
+        result = origin.push(current_branch)[0]
+    except Exception as error:
+        return f"Failed to push {current_branch} in {repo_name}: {error}"
+
+    if result.flags & result.ERROR:
+        return f"Push rejected for {current_branch} in {repo_name}: {result.summary}"
+
+    return f"Pushed {current_branch} in {repo_name}"

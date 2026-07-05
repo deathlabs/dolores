@@ -110,12 +110,67 @@ def get_github_client() -> Github:
     return Github(auth=Auth.Token(GITHUB_PERSONAL_ACCESS_TOKEN))
 
 
-@tool(description="Fetch all review comments for a GitHub pull request.")
-async def get_pull_request_comments(
+@tool(description="Get all pull request issue comments for a GitHub pull request.")
+async def get_pull_request_issue_comments(
     repo_name: str,
     pull_request_number: int,
 ) -> str:
-    """Fetch all review comments for a GitHub pull request.
+    """Get all issue comments for a GitHub pull request.
+
+    Args:
+        repo_name: The full name of the repository (i.e., owner/repo).
+        pull_request_number: The pull request number.
+
+    Returns:
+        A list of pull request issue comments if successful, or an error message
+        if failed.
+    """
+
+    # Init a GitHub client.
+    client = get_github_client()
+
+    # Get the repository object.
+    try:
+        repo = client.get_repo(repo_name)
+    except GithubException as error:
+        if error.status == 404:
+            return f"Failed to find the {repo_name} repository"
+        return f"Failed to access the {repo_name} repository: {error}"
+
+    # Get the pull request object.
+    try:
+        pull_request = repo.get_pull(pull_request_number)
+    except GithubException as error:
+        if error.status == 404:
+            return f"Failed to find pull request #{pull_request_number}"
+        return f"Failed to access pull request #{pull_request_number}: {error}"
+
+    # Get the issue comments for the pull request.
+    comments = dumps(
+        [
+            {
+                "id": comment.id,
+                "user": comment.user.login,
+                "body": comment.body,
+                "created_at": comment.created_at.isoformat(),
+                "updated_at": comment.updated_at.isoformat(),
+            }
+            for comment in pull_request.get_issue_comments()
+        ]
+    )
+
+    return comments
+
+
+@tool(description="Get all pull request review comments for a GitHub pull request.")
+async def get_pull_request_review_comments(
+    repo_name: str,
+    pull_request_number: int,
+) -> str:
+    """Get all pull request review comments for a GitHub pull request.
+
+    These are comments left directly on lines of a diff, as opposed to general
+    conversation comments on the pull request.
 
     Args:
         repo_name: The full name of the repository (i.e., owner/repo).
@@ -145,17 +200,19 @@ async def get_pull_request_comments(
             return f"Failed to find pull request #{pull_request_number}"
         return f"Failed to access pull request #{pull_request_number}: {error}"
 
-    # Get the review comments for the pull request.
+    # Get the inline review comments for the pull request.
     comments = dumps(
         [
             {
                 "id": comment.id,
                 "user": comment.user.login,
                 "body": comment.body,
+                "path": comment.path,
+                "line": comment.line,
                 "created_at": comment.created_at.isoformat(),
                 "updated_at": comment.updated_at.isoformat(),
             }
-            for comment in pull_request.get_issue_comments()
+            for comment in pull_request.get_review_comments()
         ]
     )
 
@@ -236,26 +293,28 @@ async def get_pull_requests(repo_name: str) -> str:
 
 
 @tool(
-    description="Reply to an existing review comment on a pull request, to acknowledge it or ask for clarification."
+    description="Reply to an existing issue comment (general PR conversation) on a pull request."
 )
-async def reply_to_pull_request_comment(
-    repo_name: str, pr_number: int, comment_id: int, body: str
+async def reply_to_pull_request_issue_comment(
+    repo_name: str, pull_request_number: int, comment_id: int, body: str
 ) -> str:
-    """Reply to an existing review comment on a pull request.
+    """Reply to an existing issue comment on a pull request.
+
+    Issue comments are general conversation comments on the pull request,
+    not comments left inline on a specific line of a diff.
+
     Args:
         repo_name: The full name of the repository (i.e., owner/repo).
-        pr_number: The number of the pull request the comment belongs to.
-        comment_id: The ID of the review comment to reply to.
+        pull_request_number: The number of the pull request the comment belongs to.
+        comment_id: The ID of the issue comment to reply to.
         body: The text of the reply (e.g., an acknowledgment or a clarifying question).
 
     Returns:
         A message if successful, or an error message if failed.
     """
-
     # Init a GitHub client.
     client = get_github_client()
 
-    # Get the repository object.
     try:
         repo = client.get_repo(repo_name)
     except GithubException as error:
@@ -263,20 +322,70 @@ async def reply_to_pull_request_comment(
             return f"Failed to find the {repo_name} repository"
         return f"Failed to access the {repo_name} repository: {error}"
 
-    # Get the pull request object.
     try:
-        pr = repo.get_pull(pr_number)
+        issue = repo.get_issue(pull_request_number)
     except GithubException as error:
         if error.status == 404:
-            return f"Failed to find pull request #{pr_number} in the {repo_name} repository"
-        return f"Failed to access pull request #{pr_number} in the {repo_name} repository: {error}"
+            return f"Failed to find pull request #{pull_request_number} in the {repo_name} repository"
+        return f"Failed to access pull request #{pull_request_number} in the {repo_name} repository: {error}"
 
-    # Reply to the review comment.
     try:
-        pr.create_review_comment_reply(comment_id, body)
+        target_comment = issue.get_comment(comment_id)
     except GithubException as error:
         if error.status == 404:
-            return f"Failed to find comment #{comment_id} on pull request #{pr_number} in the {repo_name} repository"
-        return f"Failed to reply to comment #{comment_id} on pull request #{pr_number} in the {repo_name} repository: {error}"
+            return f"Failed to find comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository"
+        return f"Failed to access comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository: {error}"
 
-    return f"Successfully replied to comment #{comment_id} on pull request #{pr_number} in the {repo_name} repository"
+    try:
+        issue.create_comment(f"@{target_comment.user.login} {body}")
+    except GithubException as error:
+        return f"Failed to reply to comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository: {error}"
+
+    return f"Successfully replied to comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository"
+
+
+@tool(
+    description="Reply to an existing inline review comment (diff comment) on a pull request."
+)
+async def reply_to_pull_request_review_comment(
+    repo_name: str, pull_request_number: int, comment_id: int, body: str
+) -> str:
+    """Reply to an existing inline review comment on a pull request.
+
+    Review comments are left directly on a line of a diff, as opposed to
+    general conversation comments on the pull request.
+
+    Args:
+        repo_name: The full name of the repository (i.e., owner/repo).
+        pull_request_number: The number of the pull request the comment belongs to.
+        comment_id: The ID of the review comment to reply to.
+        body: The text of the reply (e.g., an acknowledgment or a clarifying question).
+
+    Returns:
+        A message if successful, or an error message if failed.
+    """
+    # Init a GitHub client.
+    client = get_github_client()
+
+    try:
+        repo = client.get_repo(repo_name)
+    except GithubException as error:
+        if error.status == 404:
+            return f"Failed to find the {repo_name} repository"
+        return f"Failed to access the {repo_name} repository: {error}"
+
+    try:
+        pull_request = repo.get_pull(pull_request_number)
+    except GithubException as error:
+        if error.status == 404:
+            return f"Failed to find pull request #{pull_request_number} in the {repo_name} repository"
+        return f"Failed to access pull request #{pull_request_number} in the {repo_name} repository: {error}"
+
+    try:
+        pull_request.create_review_comment_reply(comment_id, body)
+    except GithubException as error:
+        if error.status == 404:
+            return f"Failed to find comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository"
+        return f"Failed to reply to comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository: {error}"
+
+    return f"Successfully replied to comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository"
