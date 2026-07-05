@@ -2,7 +2,7 @@ FROM alpine:3.23
 LABEL image.authors="Victor Fernandez III, @cyberphor"
 WORKDIR /home/dolores/
 COPY requirements.txt requirements.txt
-RUN apk add --no-cache --update python3 py3-pip &&\
+RUN apk add --no-cache --update python3=3.12.13-r0 py3-pip=25.1.1-r1 &&\
     pip install --no-cache-dir --break-system-packages -r requirements.txt &&\
     addgroup -g 1000 dolores &&\
     adduser -D -G dolores -u 1000 dolores -h /home/dolores/ &&\
