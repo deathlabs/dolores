@@ -9,7 +9,7 @@ from github import Auth, Github
 from github.GithubException import GithubException
 
 # Local imports.
-from dolores.config import DOWNLOADS_DIR, GITHUB_PERSONAL_ACCESS_TOKEN
+from dolores.config import GITHUB_PERSONAL_ACCESS_TOKEN
 
 
 @tool(description="Create a branch in a GitHub repository.")
@@ -312,9 +312,11 @@ async def reply_to_pull_request_issue_comment(
     Returns:
         A message if successful, or an error message if failed.
     """
+
     # Init a GitHub client.
     client = get_github_client()
 
+    # Get the repository object.
     try:
         repo = client.get_repo(repo_name)
     except GithubException as error:
@@ -322,6 +324,7 @@ async def reply_to_pull_request_issue_comment(
             return f"Failed to find the {repo_name} repository"
         return f"Failed to access the {repo_name} repository: {error}"
 
+    # Get the pull request object.
     try:
         issue = repo.get_issue(pull_request_number)
     except GithubException as error:
@@ -329,15 +332,17 @@ async def reply_to_pull_request_issue_comment(
             return f"Failed to find pull request #{pull_request_number} in the {repo_name} repository"
         return f"Failed to access pull request #{pull_request_number} in the {repo_name} repository: {error}"
 
+    # Get the issue comment object.
     try:
-        target_comment = issue.get_comment(comment_id)
+        issue_comment = issue.get_comment(comment_id)
     except GithubException as error:
         if error.status == 404:
             return f"Failed to find comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository"
         return f"Failed to access comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository: {error}"
 
+    # Reply to the issue comment.
     try:
-        issue.create_comment(f"@{target_comment.user.login} {body}")
+        issue_comment.reply(f"@{issue_comment.user.login} {body}")
     except GithubException as error:
         return f"Failed to reply to comment #{comment_id} on pull request #{pull_request_number} in the {repo_name} repository: {error}"
 
@@ -364,9 +369,11 @@ async def reply_to_pull_request_review_comment(
     Returns:
         A message if successful, or an error message if failed.
     """
+
     # Init a GitHub client.
     client = get_github_client()
 
+    # Get the repository object.
     try:
         repo = client.get_repo(repo_name)
     except GithubException as error:
@@ -374,6 +381,7 @@ async def reply_to_pull_request_review_comment(
             return f"Failed to find the {repo_name} repository"
         return f"Failed to access the {repo_name} repository: {error}"
 
+    # Get the pull request object.
     try:
         pull_request = repo.get_pull(pull_request_number)
     except GithubException as error:
@@ -381,6 +389,7 @@ async def reply_to_pull_request_review_comment(
             return f"Failed to find pull request #{pull_request_number} in the {repo_name} repository"
         return f"Failed to access pull request #{pull_request_number} in the {repo_name} repository: {error}"
 
+    # Reply to the review comment.
     try:
         pull_request.create_review_comment_reply(comment_id, body)
     except GithubException as error:
