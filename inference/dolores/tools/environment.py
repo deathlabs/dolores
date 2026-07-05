@@ -3,7 +3,7 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 
 
 async def get_environment_tools(url: str):
-    """Retrieves tools for interacting with the environment."""
+    """Retrieve tools for interacting with the environment."""
     client = MultiServerMCPClient(
         {
             "dolores": {
