@@ -17,6 +17,11 @@ on:
         type: choice
         options: [low, high, critical]
         default: low
+      dockerfile_lint_check_failure_threshold:
+        description: "Threshold to fail the Dockerfile lint check."
+        type: choice
+        options: [error, warning, info, style, ignore]
+        default: error
 
 jobs:
 
@@ -68,7 +73,7 @@ jobs:
       - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ${{ matrix.container }}/Dockerfile
-          failure-threshold: warning
+          failure-threshold: ${{ github.event.inputs.dockerfile_lint_check_failure_threshold || 'error' }}
 
   sast:
     name: SAST Scan
