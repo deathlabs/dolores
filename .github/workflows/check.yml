@@ -50,7 +50,7 @@ jobs:
           - tools
     steps:
       - name: Clone the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Python
         uses: actions/setup-python@v5
         with:
@@ -71,7 +71,7 @@ jobs:
           - inference
           - tools
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ${{ matrix.container }}/Dockerfile
