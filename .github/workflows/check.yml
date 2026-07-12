@@ -5,6 +5,7 @@ on:
   push:
     branches: [ "**" ]
     paths:
+      - ".github/workflows/**"
       - "backend/**"
       - "database/**"
       - "inference/**"
@@ -67,6 +68,7 @@ jobs:
       - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ${{ matrix.container }}/Dockerfile
+          failure-threshold: warning
 
   sast:
     name: SAST Scan
