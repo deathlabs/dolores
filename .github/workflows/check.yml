@@ -12,16 +12,18 @@ on:
       - "tools/**"
   workflow_dispatch:
     inputs:
-      severity_cutoff:
-        description: "Severity threshold to fail the scan. Options: low, high, critical. Default: low."
-        type: choice
-        options: [low, high, critical]
-        default: low
       dockerfile_lint_check_failure_threshold:
         description: "Threshold to fail the Dockerfile lint check."
         type: choice
         options: [error, warning, info, style, ignore]
         default: error
+      sbom_scan_failure_threshold:
+        description: "Threshold to fail the SBOM scan."
+        type: choice
+        options: [low, high, critical]
+        default: low
+  schedule:
+    - cron: '00 12 * * *' 
 
 jobs:
 
@@ -74,6 +76,7 @@ jobs:
         with:
           dockerfile: ${{ matrix.container }}/Dockerfile
           failure-threshold: ${{ github.event.inputs.dockerfile_lint_check_failure_threshold || 'error' }}
+          format: json
 
   sast:
     name: SAST Scan
@@ -119,4 +122,4 @@ jobs:
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
-          severity-cutoff: ${{ github.event.inputs.severity_cutoff || 'low' }}
+          severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
