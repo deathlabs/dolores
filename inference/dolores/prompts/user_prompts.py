@@ -4,7 +4,7 @@ from textwrap import dedent
 
 def get_user_prompt(repository: str) -> str:
     """Generate a user prompt for evaluating a repository for security vulnerabilities."""
-    return dedent(f"""
+    return dedent("""
         Evaluate the {repository} repository for security vulnerabilities and follow your standard loop.
 
         Step 1: Recall memory
