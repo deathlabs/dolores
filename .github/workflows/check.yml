@@ -49,6 +49,8 @@ jobs:
           - inference
           - tools
     steps:
+      - name: List repo structure
+        run: ls -la && find . -maxdepth 2 -type d
       - name: Run Python Ruff
         uses: astral-sh/ruff-action@v4.1.0
         with:
