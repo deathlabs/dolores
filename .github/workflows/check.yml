@@ -52,13 +52,13 @@ jobs:
       - name: Run Python Ruff
         uses: astral-sh/ruff-action@v4.1.0
         with:
-          args: "check --output-format=sarif --output-file=code-lint-scan-${{ matrix.container }}.sarif"
+          args: "check --output-format=sarif --output-file=${{ matrix.container }}-code-lint-scan.sarif"
           src: ${{ matrix.container }}
       - name: Upload Code Lint Scan
         uses: actions/upload-artifact@v7
         with:
-          name: code-lint-scan-${{ matrix.container }}
-          path: code-lint-scan-${{ matrix.container }}.sarif
+          name: ${{ matrix.container }}-code-lint-scan
+          path: ${{ matrix.container }}-code-lint-scan.sarif
 
   dockerfile-lint:
     name: Dockerfile Lint Scan
@@ -79,11 +79,11 @@ jobs:
           dockerfile: ${{ matrix.container }}/Dockerfile
           failure-threshold: ${{ github.event.inputs.dockerfile_lint_scan_failure_threshold || 'error' }}
           format: sarif
-          output-file: dockerfile-lint-scan-${{ matrix.container }}.sarif
+          output-file: ${{ matrix.container }}-dockerfile-lint-scan.sarif
       - name: Upload Dockerfile Lint Scan
         uses: actions/upload-artifact@v7
         with:
-          path: dockerfile-lint-scan-${{ matrix.container }}.sarif
+          path: ${{ matrix.container }}-dockerfile-lint-scan.sarif
           archive: false
 
   sast:
@@ -102,11 +102,11 @@ jobs:
       - name: Clone Repository
         uses: actions/checkout@v6
       - name: Run Semgrep
-        run: semgrep scan --config auto ${{ matrix.container }} --sarif --sarif-output=sast-scan-${{ matrix.container }}.sarif
+        run: semgrep scan --config auto ${{ matrix.container }} --sarif --sarif-output=${{ matrix.container }}-sast-scan.sarif
       - name: Upload SAST Scan
         uses: actions/upload-artifact@v7
         with:
-          path: sast-scan-${{ matrix.container }}.sarif
+          path: ${{ matrix.container }}-sast-scan.sarif
           archive: false
 
   sca:
@@ -130,21 +130,21 @@ jobs:
         with:
           path: ${{ matrix.container }}
           format: cyclonedx-json
-          output-file: sbom-${{ matrix.container }}.json
+          output-file: ${{ matrix.container }}-sbom.json
       - name: Upload SBOM
         uses: actions/upload-artifact@v7
         with:
-          path: sbom-${{ matrix.container }}.json
+          path: ${{ matrix.container }}-sbom.json
           archive: false
       - name: Run Grype
         uses: anchore/scan-action@v7
         with:
-          sbom: sbom-${{ matrix.container }}.json
+          sbom: ${{ matrix.container }}-sbom.json
           severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
           output-format: cyclonedx-json
-          output-file: sbom-scan-${{ matrix.container }}.json
+          output-file: ${{ matrix.container }}-sbom-scan.json
       - name: Upload SBOM Scan
         uses: actions/upload-artifact@v7
         with:
-          path: sbom-scan-${{ matrix.container }}.json
+          path: ${{ matrix.container }}-sbom-scan.json
           archive: false
