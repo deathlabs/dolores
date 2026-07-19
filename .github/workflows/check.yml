@@ -52,7 +52,7 @@ jobs:
       - name: Run Python Ruff
         uses: astral-sh/ruff-action@v4.1.0
         with:
-          args: check --output-format=sarif --output-file=code-lint-scan-${{ matrix.container }}.sarif
+          args: "check --output-format=sarif --output-file=code-lint-scan-${{ matrix.container }}.sarif"
           src: ${{ matrix.container }}
       - name: Upload Code Lint Scan
         uses: actions/upload-artifact@v7
