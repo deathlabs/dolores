@@ -49,15 +49,12 @@ jobs:
           - inference
           - tools
     steps:
-      - name: List repo structure
-        run: pwd && ls -la && find . -maxdepth 2 -type d
+      - name: Clone Repository
+        uses: actions/checkout@v7
       - name: Run Python Ruff
         uses: astral-sh/ruff-action@v4.1.0
         with:
           args: check --output-format=sarif --output-file=${{ matrix.container }}-lint-python-code-scan.sarif ${{ matrix.container }}
-      - name: Debug Python Ruff
-        if: always()
-        run: cat ${{ matrix.container }}-lint-python-code-scan.sarif
       - name: Upload Code Lint Scan
         uses: actions/upload-artifact@v7
         with:
