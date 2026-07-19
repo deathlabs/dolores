@@ -1,0 +1,589 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/backend/checkpoints/admin.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 2,
+                        "startColumn": 1,
+                        "startLine": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `django.contrib.admin`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/backend/checkpoints/admin.py"
+                },
+                "region": {
+                  "endColumn": 33,
+                  "endLine": 1,
+                  "startColumn": 28,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`django.contrib.admin` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/backend/checkpoints/tests.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 2,
+                        "startColumn": 1,
+                        "startLine": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `django.test.TestCase`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/backend/checkpoints/tests.py"
+                },
+                "region": {
+                  "endColumn": 33,
+                  "endLine": 1,
+                  "startColumn": 25,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`django.test.TestCase` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/backend/checkpoints/views.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 2,
+                        "startColumn": 1,
+                        "startLine": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `django.shortcuts.render`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/backend/checkpoints/views.py"
+                },
+                "region": {
+                  "endColumn": 36,
+                  "endLine": 1,
+                  "startColumn": 30,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`django.shortcuts.render` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/backend/memories/admin.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 2,
+                        "startColumn": 1,
+                        "startLine": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `django.contrib.admin`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/backend/memories/admin.py"
+                },
+                "region": {
+                  "endColumn": 33,
+                  "endLine": 1,
+                  "startColumn": 28,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`django.contrib.admin` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/backend/memories/tests.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 2,
+                        "startColumn": 1,
+                        "startLine": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `django.test.TestCase`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/backend/memories/tests.py"
+                },
+                "region": {
+                  "endColumn": 33,
+                  "endLine": 1,
+                  "startColumn": 25,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`django.test.TestCase` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/backend/memories/views.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 2,
+                        "startColumn": 1,
+                        "startLine": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `django.shortcuts.render`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/backend/memories/views.py"
+                },
+                "region": {
+                  "endColumn": 36,
+                  "endLine": 1,
+                  "startColumn": 30,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`django.shortcuts.render` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/models/__init__.py"
+                },
+                "region": {
+                  "endColumn": 43,
+                  "endLine": 1,
+                  "startColumn": 27,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`.model_client.get_model_client` imported but unused; consider removing, adding to `__all__`, or using a redundant alias"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/models/openai.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 6,
+                        "endLine": 25,
+                        "startColumn": 5,
+                        "startLine": 21
+                      },
+                      "insertedContent": {
+                        "text": "from azure.identity import (\n        DefaultAzureCredential,\n        get_bearer_token_provider,\n    )"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `azure.identity.AzureAuthorityHosts`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/models/openai.py"
+                },
+                "region": {
+                  "endColumn": 28,
+                  "endLine": 22,
+                  "startColumn": 9,
+                  "startLine": 22
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`azure.identity.AzureAuthorityHosts` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/prompts/system_prompts.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 12,
+                        "endLine": 47,
+                        "startColumn": 19,
+                        "startLine": 7
+                      },
+                      "insertedContent": {
+                        "text": "\"\"\"\n        You are a security-focused agent that evaluates GitHub repositories for vulnerabilities, remediates them, and submits pull requests, while continuously improving the multi-agent system's judgment by learning from PR activity and outcomes.\n\n        Your work follows a fixed loop for every repository:\n\n        1. Recall relevant repo facts and prior insights from semantic memory, and relevant coding conventions from procedural memory, before doing anything else.\n        2. Review every pull request you have previously submitted to this repository, split into two categories:\n        a. Open PRs: review unresolved comments and requested changes. For each one, decide whether it is security or acceptance relevant, a style or convention preference, or a purely subjective one-off opinion with no generalizable rule. Security and acceptance relevant comments, and style or convention preferences, are both actionable. A purely subjective one-off opinion is not actionable.\n        b. Closed, unmerged PRs: for each one, check whether semantic memory already contains an insight explaining why it was rejected. If it does not, extract the reason from the available evidence and save it now.\n        3. Update semantic memory and procedural memory with anything learned from step 2 before proceeding. Check for existing related insights first and refine them instead of creating duplicates or conflicting entries.\n        4. For each open PR from step 2a with an actionable comment, check out its existing branch and apply the fix before doing anything else in this step. If the comment was a style or convention preference, apply the corresponding procedural memory instruction to the code already present on that branch, not just to future code. Push the fix to the existing branch. Do not comment on the PR. Do not treat this as complete until the fix has actually been written and pushed, not merely reasoned about.\n        5. Clone or update the repository and evaluate its files for security vulnerabilities.\n        6. For each vulnerability found, check whether an existing branch already addresses it, whether from an open PR or prior work. Do not duplicate a fix that is already in progress.\n        7. Create a branch and apply the fix for anything not already covered.\n        8. Submit a pull request only for newly created branches in step 7 that address vulnerabilities not already covered by an existing PR.\n\n        When reviewing pull request history, your objective is not to summarize individual pull requests. Extract durable lessons that generalize across repositories and improve future agent behavior. Focus on patterns rather than isolated events, capture why an approach succeeded or failed when the evidence supports it, and distinguish repository-specific conventions from broadly applicable engineering practices. Do not infer intent beyond available evidence.\n\n        Every insight, decision, and reasoning step that any step produces must be recorded to the appropriate memory as an explicit update, not only described in your response. Reaching a conclusion is not the same as saving it. If you have decided something is true or worth remembering, or applied a fix, you must persist or push it before moving to the next step. Describing an action in your response text is never a substitute for calling the corresponding tool.\n\n        Before saving any insight, check semantic memory or procedural memory, as appropriate, for existing related knowledge. Update or refine existing insights instead of creating duplicates or conflicting entries. Distinguish between the two:\n\n        * Semantic memory holds facts: what vulnerabilities exist or existed in a repository, the status of PRs you have submitted, and durable lessons about patterns across repositories (what tends to get accepted or rejected, and why).\n        * Procedural memory holds instructions: concrete, generalizable rules for how to act in the future, such as coding conventions, formatting preferences, or review feedback that should change how you write code or comments going forward.\n\n        When a review comment on any of your PRs identifies a style, formatting, or convention preference rather than a security concern, do not just record that the comment was made. Translate it into a concrete, generalizable instruction and save it to procedural memory. For example, instead of recording \"reviewer left a comment about punctuation,\" save an instruction such as \"end code comments with periods, per this repository's reviewer convention.\" Check procedural memory before writing or editing any code, and apply relevant instructions to your output, including code already present on an existing branch, not only code you are about to write for the first time.\n\n        For every function and code block you evaluate, trace where external or untrusted input enters (function arguments, request data, file contents, deserialized data) and follow it to where it is used. Flag any case where untrusted input reaches a sensitive sink without validation or sanitization, including but not limited to:\n\n        * Hardcoded secrets, credentials, or tokens\n        * Insecure or outdated dependencies\n        * Injection vulnerabilities, including SQL injection (string-built queries), command injection (shell=True or os.system with unsanitized input), path traversal, and code or template injection\n        * Insecure deserialization (pickle, yaml.load, marshal, eval/exec on untrusted data)\n        * Insecure authentication or authorization patterns\n        * Sensitive data exposure (logging secrets, returning sensitive fields, weak encryption)\n        * Misconfigured security controls (debug mode enabled, permissive CORS, disabled TLS verification)\n\n        Do not rely solely on keyword matching. Read each function's logic and identify the vulnerability class even if it does not match a known pattern exactly. Evaluate every file, including small or seemingly trivial scripts.\n\n        Only submit a pull request when a vulnerability is not already covered by an open PR or existing branch. If no fixes are needed at all, do not create a branch, push changes, or submit a PR.\n        \"\"\""
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove extraneous `f` prefix"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/prompts/system_prompts.py"
+                },
+                "region": {
+                  "endColumn": 12,
+                  "endLine": 47,
+                  "startColumn": 19,
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "f-string without any placeholders"
+          },
+          "ruleId": "F541"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/tools/__init__.py"
+                },
+                "region": {
+                  "endColumn": 47,
+                  "endLine": 1,
+                  "startColumn": 26,
+                  "startLine": 1
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`.environment.get_environment_tools` imported but unused; consider removing, adding to `__all__`, or using a redundant alias"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/inference/dolores/tools/__init__.py"
+                },
+                "region": {
+                  "endColumn": 37,
+                  "endLine": 2,
+                  "startColumn": 21,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`.memory.get_memory_tools` imported but unused; consider removing, adding to `__all__`, or using a redundant alias"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/tools/dolores/tools/github.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 3,
+                        "startColumn": 1,
+                        "startLine": 2
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `pathlib.Path`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/tools/dolores/tools/github.py"
+                },
+                "region": {
+                  "endColumn": 25,
+                  "endLine": 2,
+                  "startColumn": 21,
+                  "startLine": 2
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`pathlib.Path` imported but unused"
+          },
+          "ruleId": "F401"
+        },
+        {
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "file:///home/victor/deathlabs/dolores/tools/dolores/tools/github.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "endColumn": 1,
+                        "endLine": 5,
+                        "startColumn": 1,
+                        "startLine": 4
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": {
+                "text": "Remove unused import: `subprocess.run`"
+              }
+            }
+          ],
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///home/victor/deathlabs/dolores/tools/dolores/tools/github.py"
+                },
+                "region": {
+                  "endColumn": 27,
+                  "endLine": 4,
+                  "startColumn": 24,
+                  "startLine": 4
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "`subprocess.run` imported but unused"
+          },
+          "ruleId": "F401"
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://github.com/astral-sh/ruff",
+          "name": "ruff",
+          "rules": [
+            {
+              "fullDescription": {
+                "text": "## What it does\nChecks for unused imports.\n\n## Why is this bad?\nUnused imports add a performance overhead at runtime, and risk creating\nimport cycles. They also increase the cognitive load of reading the code.\n\nIf an import statement is used to check for the availability or existence\nof a module, consider using `importlib.util.find_spec` instead.\n\nIf an import statement is used to re-export a symbol as part of a module's\npublic interface, consider using a \"redundant\" import alias, which\ninstructs Ruff (and other tools) to respect the re-export, and avoid\nmarking it as unused, as in:\n\n```python\nfrom module import member as member\n```\n\nAlternatively, you can use `__all__` to declare a symbol as part of the module's\ninterface, as in:\n\n```python\n# __init__.py\nimport some_module\n\n__all__ = [\"some_module\"]\n```\n\n## Preview\nWhen [preview] is enabled (and certain simplifying assumptions\nare met), we analyze all import statements for a given module\nwhen determining whether an import is used, rather than simply\nthe last of these statements. This can result in both different and\nmore import statements being marked as unused.\n\nFor example, if a module consists of\n\n```python\nimport a\nimport a.b\n```\n\nthen both statements are marked as unused under [preview], whereas\nonly the second is marked as unused under stable behavior.\n\nAs another example, if a module consists of\n\n```python\nimport a.b\nimport a\n\na.b.foo()\n```\n\nthen a diagnostic will be emitted for the second line under [preview],\nwhereas no diagnostic is emitted under stable behavior.\n\nNote that this behavior is somewhat subjective and is designed\nto conform to the developer's intuition rather than Python's actual\nexecution. To wit, the statement `import a.b` automatically executes\n`import a`, so in some sense `import a` is _always_ redundant\nin the presence of `import a.b`.\n\n\n## Fix safety\n\nFixes to remove unused imports are safe, except in `__init__.py` files.\n\nApplying fixes to `__init__.py` files is currently in preview. The fix offered depends on the\ntype of the unused import. Ruff will suggest a safe fix to export first-party imports with\neither a redundant alias or, if already present in the file, an `__all__` entry. If multiple\n`__all__` declarations are present, Ruff will not offer a fix. Ruff will suggest an unsafe fix\nto remove third-party and standard library imports -- the fix is unsafe because the module's\ninterface changes.\n\nSee [this FAQ section](https://docs.astral.sh/ruff/faq/#how-does-ruff-determine-which-of-my-imports-are-first-party-third-party-etc)\nfor more details on how Ruff\ndetermines whether an import is first or third-party.\n\n## Example\n\n```python\nimport numpy as np  # unused import\n\n\ndef area(radius):\n    return 3.14 * radius**2\n```\n\nUse instead:\n\n```python\ndef area(radius):\n    return 3.14 * radius**2\n```\n\nTo check the availability of a module, use `importlib.util.find_spec`:\n\n```python\nfrom importlib.util import find_spec\n\nif find_spec(\"numpy\") is not None:\n    print(\"numpy is installed\")\nelse:\n    print(\"numpy is not installed\")\n```\n\n## Options\n- `lint.ignore-init-module-imports`\n- `lint.pyflakes.allowed-unused-imports`\n\n## References\n- [Python documentation: `import`](https://docs.python.org/3/reference/simple_stmts.html#the-import-statement)\n- [Python documentation: `importlib.util.find_spec`](https://docs.python.org/3/library/importlib.html#importlib.util.find_spec)\n- [Typing documentation: interface conventions](https://typing.python.org/en/latest/spec/distributing.html#library-interface-public-and-private-symbols)\n\n[preview]: https://docs.astral.sh/ruff/preview/\n"
+              },
+              "help": {
+                "text": "`{name}` imported but unused; consider using `importlib.util.find_spec` to test for availability"
+              },
+              "helpUri": "https://docs.astral.sh/ruff/rules/unused-import",
+              "id": "F401",
+              "properties": {
+                "id": "F401",
+                "kind": "Pyflakes",
+                "name": "unused-import",
+                "problem.severity": "error"
+              },
+              "shortDescription": {
+                "text": "`{name}` imported but unused; consider using `importlib.util.find_spec` to test for availability"
+              }
+            },
+            {
+              "fullDescription": {
+                "text": "## What it does\nChecks for f-strings that do not contain any placeholder expressions.\n\n## Why is this bad?\nf-strings are a convenient way to format strings, but they are not\nnecessary if there are no placeholder expressions to format. In this\ncase, a regular string should be used instead, as an f-string without\nplaceholders can be confusing for readers, who may expect such a\nplaceholder to be present.\n\nAn f-string without any placeholders could also indicate that the\nauthor forgot to add a placeholder expression.\n\n## Example\n```python\nf\"Hello, world!\"\n```\n\nUse instead:\n```python\n\"Hello, world!\"\n```\n\n**Note:** to maintain compatibility with PyFlakes, this rule only flags\nf-strings that are part of an implicit concatenation if _none_ of the\nf-string segments contain placeholder expressions.\n\nFor example:\n\n```python\n# Will not be flagged.\n(\n    f\"Hello,\"\n    f\" {name}!\"\n)\n\n# Will be flagged.\n(\n    f\"Hello,\"\n    f\" World!\"\n)\n```\n\nSee [#10885](https://github.com/astral-sh/ruff/issues/10885) for more.\n\n## References\n- [PEP 498 – Literal String Interpolation](https://peps.python.org/pep-0498/)\n"
+              },
+              "help": {
+                "text": "f-string without any placeholders"
+              },
+              "helpUri": "https://docs.astral.sh/ruff/rules/f-string-missing-placeholders",
+              "id": "F541",
+              "properties": {
+                "id": "F541",
+                "kind": "Pyflakes",
+                "name": "f-string-missing-placeholders",
+                "problem.severity": "error"
+              },
+              "shortDescription": {
+                "text": "f-string without any placeholders"
+              }
+            }
+          ],
+          "version": "0.15.22"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}
