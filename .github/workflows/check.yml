@@ -94,7 +94,12 @@ jobs:
       - name: Clone the repository
         uses: actions/checkout@v6
       - name: Run Semgrep
-        run: semgrep scan --config auto ${{ matrix.container }}
+        run: semgrep scan --config auto ${{ matrix.container }} --sarif --sarif-output=sast-scan-${{ matrix.container }}.json
+      - name: Upload SAST SCAN
+        uses: actions/upload-artifact@v7
+        with:
+          path: sast-scan-${{ matrix.container }}.json
+          archive: false
 
   sca:
     name: SBOM Scan
@@ -118,8 +123,18 @@ jobs:
           path: ${{ matrix.container }}
           output-file: sbom-${{ matrix.container }}.json
           artifact-name: sbom-${{ matrix.container }}.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v7
+        with:
+          path: sbom-${{ matrix.container }}.json
+          archive: false
       - name: Scan SBOM
         uses: anchore/scan-action@v7
         with:
           sbom: sbom-${{ matrix.container }}.json
           severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
+      - name: Upload SBOM Scan
+        uses: actions/upload-artifact@v7
+        with:
+          path: sbom-scan-${{ matrix.container }}.json
+          archive: false
