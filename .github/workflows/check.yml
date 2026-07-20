@@ -37,6 +37,8 @@ jobs:
         id: trufflehog
         uses: trufflesecurity/trufflehog@main
         continue-on-error: false
+        with:
+          extra_args: --results=verified,unknown
 
   python-code-lint:
     name: Python Code Lint Scan
@@ -55,6 +57,9 @@ jobs:
         uses: astral-sh/ruff-action@v4.1.0
         with:
           args: check --output-format=sarif --output-file=${{ matrix.container }}-lint-python-code-scan.sarif ${{ matrix.container }}
+      - name: Print Code Lint Scan
+        if: always()
+        run: cat ${{ matrix.container }}-lint-python-code-scan.sarif
       - name: Upload Code Lint Scan
         uses: actions/upload-artifact@v7
         with:
@@ -81,6 +86,9 @@ jobs:
           failure-threshold: ${{ github.event.inputs.dockerfile_lint_scan_failure_threshold || 'error' }}
           format: sarif
           output-file: ${{ matrix.container }}-lint-dockerfile-scan.sarif
+      - name: Print Dockerfile Lint Scan
+        if: always()
+        run: cat ${{ matrix.container }}-lint-dockerfile-scan.sarif
       - name: Upload Dockerfile Lint Scan
         uses: actions/upload-artifact@v7
         with:
@@ -104,6 +112,9 @@ jobs:
         uses: actions/checkout@v6
       - name: Run Semgrep
         run: semgrep scan --config auto ${{ matrix.container }} --sarif --sarif-output=${{ matrix.container }}-sast-scan.sarif
+      - name: Upload SAST Scan
+        if: always()
+        run: cat ${{ matrix.container }}-sast-scan.sarif
       - name: Upload SAST Scan
         uses: actions/upload-artifact@v7
         with:
@@ -140,6 +151,9 @@ jobs:
           severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
           output-format: cyclonedx-json
           output-file: ${{ matrix.container }}-sbom-scan.json
+      - name: Print SBOM Scan
+        if: always()
+        run: cat ${{ matrix.container }}-sbom-scan.json
       - name: Upload SBOM Scan
         uses: actions/upload-artifact@v7
         with:
