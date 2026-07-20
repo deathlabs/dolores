@@ -152,8 +152,8 @@ jobs:
           fail-build: false
       - name: Print SBOM Scan
         run: cat ${{ steps.grype.outputs.cyclonedx-json }}
-#      - name: Upload SBOM Scan
-#        uses: actions/upload-artifact@v7
-#        with:
-#          path: ${{ matrix.container }}-sbom-scan.json
-#          archive: false
+      - name: Upload SBOM Scan
+        uses: actions/upload-artifact@v7
+        with:
+          path: ${{ matrix.container }}-sbom-scan.json
+          archive: false
