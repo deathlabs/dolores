@@ -150,7 +150,16 @@ jobs:
           severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
           output-format: cyclonedx-json
           output-file: ${{ matrix.container }}-sbom-scan.json
-          fail-build: false
+          fail-build: true
+      - name: Print SBOM Scan
+        run: jq -r '
+            (.vulnerabilities // [])[] |
+            [
+              ((.ratings[]? | select(.severity != null) | .severity) // "unknown"),
+              .id,
+              (try ((.affects[0].ref // "") | capture("pkg:(?<pkg>[^?]+)").pkg) catch "unknown")
+            ] | @tsv
+          ' ${{ matrix.container }}-sbom-scan.json | sort | column -t
       - name: Upload SBOM Scan
         uses: actions/upload-artifact@v7
         with:
