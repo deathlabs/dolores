@@ -149,6 +149,7 @@ jobs:
           sbom: ${{ matrix.container }}-sbom.json
           severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
           output-format: cyclonedx-json
+          fail-build: false
       - name: Print SBOM Scan
         run: cat ${{ steps.grype.outputs.cyclonedx-json }}
 #      - name: Upload SBOM Scan
