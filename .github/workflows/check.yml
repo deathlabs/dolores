@@ -37,8 +37,6 @@ jobs:
         id: trufflehog
         uses: trufflesecurity/trufflehog@main
         continue-on-error: false
-        with:
-          extra_args: --results=verified,unknown
 
   python-code-lint:
     name: Python Code Lint Scan
@@ -153,7 +151,15 @@ jobs:
           output-file: ${{ matrix.container }}-sbom-scan.json
       - name: Print SBOM Scan
         if: always()
-        run: cat ${{ matrix.container }}-sbom-scan.json
+        run: |
+          jq -r '
+            .vulnerabilities[] |
+            [
+              (.ratings[0].severity // "unknown"),
+              .id,
+              (.affects[0].ref | capture("pkg:(?<pkg>[^?]+)").pkg)
+            ] | @tsv
+          ' ${{ matrix.container }}-sbom-scan.json | sort | column -t
       - name: Upload SBOM Scan
         uses: actions/upload-artifact@v7
         with:
