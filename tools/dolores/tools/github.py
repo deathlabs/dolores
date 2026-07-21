@@ -1,7 +1,5 @@
 # Standard library imports.
-from pathlib import Path
 from json import dumps
-from subprocess import run
 
 # Third party imports.
 from fastmcp.tools import tool

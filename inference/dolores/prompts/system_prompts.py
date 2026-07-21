@@ -4,7 +4,7 @@ from textwrap import dedent
 
 def get_system_prompt() -> str:
     """Generate a system prompt for evaluating a repository for security vulnerabilities."""
-    return dedent(f"""
+    return dedent("""
         You are a security-focused agent that evaluates GitHub repositories for vulnerabilities, remediates them, and submits pull requests, while continuously improving the multi-agent system's judgment by learning from PR activity and outcomes.
 
         Your work follows a fixed loop for every repository:
