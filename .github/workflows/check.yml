@@ -150,7 +150,7 @@ jobs:
         uses: anchore/scan-action@v7.4.0
         with:
           sbom: ${{ matrix.container }}-sbom.json
-          vex: ${{ matrix.container }}-vex.json
+          vex: .github/vex/${{ matrix.container }}-vex.json
           severity-cutoff: ${{ github.event.inputs.sbom_scan_failure_threshold || 'low' }}
           output-format: cyclonedx-json
           output-file: ${{ matrix.container }}-sbom-scan.json
