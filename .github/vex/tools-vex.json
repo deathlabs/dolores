@@ -1,6 +1,6 @@
 {
   "@context": "https://openvex.dev/ns/v0.2.0",
-  "@id": "https://openvex.dev/docs/public/vex-04bdacff7bf723ffb72eefad88f5b532a93222b3c9a37d9d28a8bca62581589e",
+  "@id": "https://openvex.dev/docs/public/vex-6c26996c7606c7d2ae8c7ec5612d89736e4973c999be7df2feed4b2ccedc2e15",
   "author": "Victor Fernandez III",
   "version": 1,
   "statements": [
@@ -13,9 +13,10 @@
           "@id": "pkg:pypi/mcp@1.28.0"
         }
       ],
-      "status": "under_investigation",
-      "timestamp": "2026-07-20T03:41:31.601185112Z"
+      "status": "not_affected",
+      "justification": "vulnerable_code_not_in_execute_path",
+      "timestamp": "2026-07-21T03:10:38.170201095Z"
     }
   ],
-  "timestamp": "2026-07-20T03:41:31Z"
+  "timestamp": "2026-07-21T03:10:38Z"
 }
