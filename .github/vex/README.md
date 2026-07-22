@@ -1,7 +1,6 @@
 # `dolores`
-
 **How Do I Add a VEX Document?**  
-If you need to create a VEX document for the `tools` container regarding the applicability of `GHSA-vj7q-gjh5-988w` in `pypi/mcp@1.28.0`, you would run the command below.
+In the event you need to create a VEX document, use `vexctl` in the same way shown below.
 ```bash
 vexctl create \
     --author "Victor Fernandez III" \
