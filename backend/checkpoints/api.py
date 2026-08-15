@@ -1,5 +1,5 @@
 # Standard library imports.
-from typing import List, Optional
+from typing import list
 
 # Third party imports.
 from ninja import NinjaAPI
@@ -13,7 +13,7 @@ api = NinjaAPI()
 
 
 @api.get("/{thread_id}/", response={200: CheckpointSchema, 404: NotFoundSchema})
-def get_checkpoint(request, thread_id: str, checkpoint_id: Optional[str] = None):
+def get_checkpoint(request, thread_id: str, checkpoint_id: str | None = None):
     try:
         checkpoints = Checkpoint.objects.filter(thread_id=thread_id)
         if checkpoint_id:
@@ -23,8 +23,8 @@ def get_checkpoint(request, thread_id: str, checkpoint_id: Optional[str] = None)
         return 404, {"message": "checkpoint not found"}
 
 
-@api.get("/", response=List[CheckpointSchema])
-def list_checkpoints(request, thread_id: Optional[str] = None):
+@api.get("/", response=list[CheckpointSchema])
+def list_checkpoints(request, thread_id: str | None = None):
     checkpoints = Checkpoint.objects.all()
     if thread_id:
         checkpoints = checkpoints.filter(thread_id=thread_id)

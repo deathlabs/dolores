@@ -1,5 +1,6 @@
+# Standard library imports.
+
 # Third party imports.
-from typing import Optional
 from ninja import Schema
 
 
@@ -7,7 +8,7 @@ class CheckpointSchema(Schema):
     thread_id: str
     checkpoint_ns: str = ""
     checkpoint_id: str
-    parent_checkpoint_id: Optional[str] = None
+    parent_checkpoint_id: str | None = None
     type: str
     checkpoint: str
     metadata_type: str
