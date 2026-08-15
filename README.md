@@ -8,6 +8,11 @@ Build and deliver secure software on GitHub or GitLab without drowning in vulner
 kind load docker-image dolores/database:latest -n demo-cluster
 ```
 
+**Step 2.** Text goes here.
+```bash
+kind load docker-image dolores/backend:latest -n demo-cluster
+```
+
 ## Deploying  
 **Step 1.** Text goes here.  
 ```bash

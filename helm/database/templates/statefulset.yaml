@@ -21,6 +21,7 @@ spec:
       initContainers:
         - name: set-permissions
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["sh", "-c", "chown -R postgres:postgres /var/lib/postgresql/data"]
           securityContext:
             runAsUser: 0

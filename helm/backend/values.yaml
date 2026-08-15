@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: dolores/backend
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: latest
 
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -46,6 +46,9 @@ livenessProbe:
   httpGet:
     path: /api/v1/healthcheck/
     port: http
+    httpHeaders:
+      - name: Host
+        value: dolores-backend
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
@@ -55,6 +58,9 @@ readinessProbe:
   httpGet:
     path: /api/v1/healthcheck/
     port: http
+    httpHeaders:
+      - name: Host
+        value: dolores-backend
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
