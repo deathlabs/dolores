@@ -1,0 +1,22 @@
+# charts/backend/values.yaml
+
+---
+namespace: dolores
+replicaCount: 1
+image: 
+  pullPolicy: Always
+  repository: dolores/backend
+  tag: latest
+service: 
+  type: ClusterIP
+  name: backend
+  port: 8000
+database:
+  engine: postgres
+  host: database
+  port: 5432
+  sslmode: disable
+  secret_key: dolores
+  name: dolores
+  user: dolores
+  password: dolores

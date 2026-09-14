@@ -1,0 +1,20 @@
+# charts/database/values.yaml
+
+---
+namespace: dolores
+replicaCount: 1
+image:
+  pullPolicy: Always
+  repository: dolores/database
+  tag: latest
+service:
+  type: ClusterIP
+  name: database
+  port: 5432
+database:
+  name: dolores
+  user: dolores
+  password: dolores
+storage:
+  path: /var/lib/postgresql
+  size: 5Gi

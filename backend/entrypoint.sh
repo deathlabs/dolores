@@ -2,6 +2,5 @@
 
 set -e
 
-python manage.py migrate
-
-uvicorn dolores.asgi:application --host 0.0.0.0 --port 8000
+uv run manage.py migrate
+uv run uvicorn dolores.asgi:application --host 0.0.0.0 --port 8000

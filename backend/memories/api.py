@@ -1,5 +1,4 @@
 # Standard library imports.
-from typing import List, Optional
 
 # Third party imports.
 from ninja import NinjaAPI, Query
@@ -13,18 +12,18 @@ api = NinjaAPI(urls_namespace="memories")
 
 
 @api.get("/", response={200: MemorySchema, 404: NotFoundSchema})
-def get_memory(request, namespace: List[str], key: str):
+def get_memory(request, namespace: list[str], key: str):
     try:
         return 200, Memory.objects.get(namespace=namespace, key=key)
     except Memory.DoesNotExist:
         return 404, {"message": "memory not found"}
 
 
-@api.get("/search/", response=List[MemorySchema])
+@api.get("/search/", response=list[MemorySchema])
 def search_memories(
     request,
-    namespace_prefix: List[str] = Query(...),
-    query: Optional[str] = None,
+    namespace_prefix: list[str] = Query(...),
+    query: str | None = None,
     limit: int = 10,
     offset: int = 0,
 ):
@@ -43,7 +42,7 @@ def create_memory(request, payload: MemoryCreateSchema):
 
 
 @api.delete("/", response={204: None, 404: NotFoundSchema})
-def delete_memory(request, namespace: List[str], key: str):
+def delete_memory(request, namespace: list[str], key: str):
     try:
         Memory.objects.get(namespace=namespace, key=key).delete()
         return 204, None

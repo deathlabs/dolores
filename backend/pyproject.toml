@@ -1,0 +1,31 @@
+[project]
+name = "dolores"
+version = "0.1.0"
+requires-python = ">=3.14.7,<3.15"
+dependencies = [
+    "asgiref==3.11.1",
+    "annotated-types==0.7.0",
+    "Django==6.0.7",
+    "django-ninja==1.6.2",
+    "django-ninja-jwt>=5.4.5",
+    "psycopg2-binary==2.9.12",
+    "pydantic==2.13.4",
+    "pydantic_core==2.46.4",
+    "pydantic[email]>=2.13.4",
+    "sqlparse==0.6.0",
+    "typing_extensions==4.15.0",
+    "typing-inspection==0.4.2",
+    "tzdata==2026.2",
+    "uvicorn",
+]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+    "ninja.Query",
+    "ninja.Path",
+    "ninja.Body",
+    "ninja.Form",
+    "ninja.File",
+    "ninja.Header",
+    "ninja.Cookie",
+]

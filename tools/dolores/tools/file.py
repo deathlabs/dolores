@@ -1,10 +1,10 @@
 # Standard library imports.
-from pathlib import Path
 from json import dumps
+from pathlib import Path
 
 # Third party imports.
 from fastmcp.tools import tool
-from git import Repo, InvalidGitRepositoryError
+from git import InvalidGitRepositoryError, Repo
 
 # Local imports.
 from dolores.config import DOWNLOADS_DIR
@@ -67,7 +67,7 @@ async def read_file(repo_name: str, file_path: str) -> str:
     # Read and return the contents of the file.
     try:
         return target.read_text()
-    except Exception as error:
+    except OSError as error:
         return f"Error reading file: {error}"
 
 
@@ -122,5 +122,5 @@ async def write_file(repo_name: str, file_path: str, content: str, branch: str) 
     try:
         target.write_text(content)
         return f"Wrote: {file_path} on branch {branch}"
-    except Exception as error:
+    except OSError as error:
         return f"Error writing file: {error}"

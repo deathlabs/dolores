@@ -5,8 +5,8 @@ from os import environ
 
 # Third party imports.
 from langchain.agents import create_agent
-from langgraph.graph.state import CompiledStateGraph
 from langchain.messages import HumanMessage
+from langgraph.graph.state import CompiledStateGraph
 
 # Local imports.
 from dolores.memory.context_schema import ContextSchema

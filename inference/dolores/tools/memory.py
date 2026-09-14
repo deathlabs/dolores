@@ -1,5 +1,5 @@
 # Third party imports.
-from langchain.tools import tool, ToolRuntime
+from langchain.tools import ToolRuntime, tool
 
 # Local imports.
 from dolores.memory.context_schema import ContextSchema

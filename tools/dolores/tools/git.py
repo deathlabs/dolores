@@ -2,9 +2,10 @@
 from pathlib import Path
 from urllib.parse import urlparse
 
+from fastmcp.tools import tool
+
 # Third party imports.
 from git import Repo
-from fastmcp.tools import tool
 
 # Local imports.
 from dolores.config import DOWNLOADS_DIR, GITHUB_PERSONAL_ACCESS_TOKEN
@@ -43,7 +44,7 @@ async def git_checkout(repo_name: str, branch: str, base_branch: str) -> str:
             repo.git.checkout(base_branch)
             repo.git.reset("--hard", f"origin/{base_branch}")
             repo.git.checkout("-b", branch)
-    except Exception as error:
+    except OSError as error:
         return f"Failed to check out {branch} in {repo_name}: {error}"
 
     return f"Checked out {branch} in {repo_name}"
@@ -70,7 +71,7 @@ async def git_clone(url: str) -> None | str:
     if not to_path.exists():
         try:
             repo = Repo.clone_from(url=url, to_path=to_path)
-        except Exception as error:
+        except OSError as error:
             return f"Failed to clone the {repo_name} repository: {error}"
 
         # Bake the token into the origin URL so later push/pull calls
@@ -122,7 +123,7 @@ async def git_commit(
     try:
         repo.git.add(A=True)
         repo.index.commit(commit_message)
-    except Exception as error:
+    except OSError as error:
         return f"Failed to commit changes on {current_branch}: {error}"
 
     return f"Committed changes on {current_branch} in {repo_name}"
@@ -147,7 +148,7 @@ async def git_list_branches(repo_name: str) -> str:
 
     try:
         repo.remotes.origin.fetch()
-    except Exception as error:
+    except OSError as error:
         return f"Failed to fetch latest refs for {repo_name}: {error}"
 
     local_branches = [head.name for head in repo.heads]
@@ -208,7 +209,7 @@ async def git_pull(repo_name: str, branch: str | None = None) -> str:
 
     try:
         repo.remotes.origin.pull(current_branch)
-    except Exception as error:
+    except OSError as error:
         return f"Failed to pull {current_branch} in {repo_name}: {error}"
 
     return f"Pulled latest changes for {current_branch} in {repo_name}"
@@ -247,7 +248,7 @@ async def git_push(repo_name: str, branch: str | None = None) -> str:
     try:
         origin = repo.remotes.origin
         result = origin.push(current_branch)[0]
-    except Exception as error:
+    except OSError as error:
         return f"Failed to push {current_branch} in {repo_name}: {error}"
 
     if result.flags & result.ERROR:

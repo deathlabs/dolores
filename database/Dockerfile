@@ -1,4 +1,4 @@
-FROM alpine:3.23
+FROM alpine:3.24
 LABEL image.authors="Victor Fernandez III, @cyberphor"
 WORKDIR /home/dolores/
 COPY entrypoint.sh entrypoint.sh
